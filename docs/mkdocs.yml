@@ -20,6 +20,7 @@ nav:
       - decisions/index.md
       - decisions/0001-react-spa-instead-of-streamlit.md
       - decisions/0002-vendor-pylibs-calc.md
+      - decisions/0003-scoring-semantics.md
   - Reference: reference/index.md
 markdown_extensions:
   - admonition
