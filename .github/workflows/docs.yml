@@ -1,0 +1,18 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths: [docs/**, server/**, justfile]
+  pull_request:
+    paths: [docs/**]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v3
+      - uses: astral-sh/setup-uv@v6
+      - run: cd server && uv sync --all-packages --all-extras
+      - run: just docs-build

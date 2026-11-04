@@ -1,0 +1,23 @@
+name: server
+
+on:
+  push:
+    branches: [main]
+    paths: [server/**, justfile, .pre-commit-config.yaml]
+  pull_request:
+    paths: [server/**]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v3
+      - uses: astral-sh/setup-uv@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: just setup
+      - run: just server-check
+      - run: just api-types && git diff --exit-code web/src/api/schema.gen.ts

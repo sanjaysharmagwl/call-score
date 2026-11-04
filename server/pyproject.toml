@@ -1,0 +1,52 @@
+# Virtual workspace root: not a package itself, only shared config and dev tooling.
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv]
+# Supply-chain guard: only consider releases at least 7 days old.
+exclude-newer = "7 days"
+
+[dependency-groups]
+dev = [
+    "fakeredis[lua]>=2.26",
+    "httpx2>=2.13",
+    "hypothesis>=6.100",
+    "mypy>=1.10",
+    "pre-commit>=3.7",
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff==0.16.9",
+]
+docs = [
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.7.7",
+    "mkdocstrings[python]>=1.0.6",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["callscore_*"]
+
+# Vendored callscore-calc / callscore-calc-whatif keep requires-python >=3.10, so the
+# py312 upgrades (datetime.UTC, StrEnum, type params) must not be applied there.
+[tool.ruff.lint.per-file-ignores]
+"packages/calc/**" = ["UP017", "UP042", "UP046", "UP047"]
+"packages/calc-whatif/**" = ["UP017", "UP042", "UP046", "UP047"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib"
+testpaths = ["packages"]

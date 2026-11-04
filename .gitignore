@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+
+# Node / web
+node_modules/
+web/dist/
+web/openapi.json
+
+# Docs
+site/
+
+# Data (see data/.gitignore)
+data/raw/*
+data/db/*
+data/exports/*
+
+# OS
+.DS_Store
+.hypothesis/
+.tanstack/

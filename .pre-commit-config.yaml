@@ -1,0 +1,45 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(docs/content/design/mockup\.html|call-score\.code-workspace)$
+      - id: end-of-file-fixer
+        exclude: ^(docs/content/design/mockup\.html|call-score\.code-workspace)$
+      - id: check-yaml
+        # mkdocs.yml uses !!python/name tags, which the safe loader rejects.
+        args: [--unsafe]
+      - id: check-toml
+      - id: check-added-large-files
+        # Bundled design artifacts are large by design (~400KB HTML, ~1MB PDF).
+        exclude: ^docs/content/design/
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.9
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        files: ^server/
+      - id: ruff-format
+        files: ^server/
+
+  - repo: local
+    hooks:
+      - id: uv-lock
+        name: uv lockfile in sync (server)
+        entry: bash -c 'cd server && uv lock --check'
+        language: system
+        pass_filenames: false
+        files: ^server/(pyproject\.toml|uv\.lock|packages/[^/]+/pyproject\.toml)$
+      - id: biome-check
+        name: biome check (web)
+        entry: pnpm --dir web exec biome check
+        language: system
+        files: ^web/
+        pass_filenames: false
+      - id: api-types
+        name: regenerate web OpenAPI types and fail on drift
+        entry: just api-types
+        language: system
+        files: ^server/packages/api/
+        pass_filenames: false

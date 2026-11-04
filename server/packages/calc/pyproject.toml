@@ -1,0 +1,31 @@
+[project]
+name = "callscore-calc"
+version = "0.2.0"
+description = "Embeddable calculation engine on Polars: filters, derived columns, group-by, rollup, pivot and compare, extensible with plugins."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{ name = "Sanjay Sharma", email = "sanjaysharmagwl@gmail.com" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed",
+]
+dependencies = [
+    # Stable Decimal landed in 1.35; the floor is the oldest release the test suite runs on.
+    # Polars 2.0 is in release candidates, so stay below it until it is tested.
+    "polars>=1.44,<2",
+    "pydantic>=2.7",
+    "typing-extensions>=4.7",
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.115"]
+testing = ["hypothesis>=6.100"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/callscore_calc"]

@@ -1,0 +1,7 @@
+seed = 20261006
+securities = 200
+years = 5
+analysts = 60
+firms = 8
+start_date = "2021-01-01"
+end_date = "2025-12-31"

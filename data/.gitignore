@@ -1,0 +1,6 @@
+raw/*
+db/*
+exports/*
+!raw/.gitkeep
+!db/.gitkeep
+!exports/.gitkeep

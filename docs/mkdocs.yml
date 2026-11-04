@@ -1,0 +1,26 @@
+site_name: callscore
+docs_dir: content
+site_dir: ../site
+theme:
+  name: material
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - ../server/packages/core/src
+            - ../server/packages/api/src
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Architecture: architecture.md
+  - Design: design/index.md
+  - Decisions:
+      - decisions/index.md
+      - decisions/0001-react-spa-instead-of-streamlit.md
+      - decisions/0002-vendor-pylibs-calc.md
+  - Reference: reference/index.md
+markdown_extensions:
+  - admonition
+  - tables

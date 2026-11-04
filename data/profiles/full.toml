@@ -1,0 +1,7 @@
+seed = 20261006
+securities = 500
+trading_days = 2520
+analysts = 180
+firms = 25
+start_date = "2016-01-01"
+end_date = "2025-12-31"
