@@ -11,7 +11,9 @@
     "typecheck": "tsc -b",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "api-types": "openapi-typescript openapi.json -o src/api/schema.gen.ts"
+    "api-types": "openapi-typescript openapi.json -o src/api/schema.gen.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@fontsource/barlow": "^5.1.0",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.0",
+    "@playwright/test": "^1.64.1",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",

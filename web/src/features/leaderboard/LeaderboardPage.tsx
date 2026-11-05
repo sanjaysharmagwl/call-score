@@ -332,7 +332,7 @@ export function LeaderboardPage() {
       <DataTable<LeaderboardRow>
         columns={columns}
         data={rows}
-        loading={listQuery.isPending}
+        loading={Boolean(runId) && listQuery.isPending}
         error={listQuery.isError ? listQuery.error : undefined}
         onRetry={() => void listQuery.refetch()}
         caption="Analyst leaderboard"
