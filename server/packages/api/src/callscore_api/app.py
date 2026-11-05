@@ -8,12 +8,25 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 import callscore_core
+from callscore_api import deps, errors
+from callscore_api.routers import (
+    analysts,
+    changes,
+    leaderboard,
+    meta,
+    methodologies,
+    overview,
+    runs,
+    sectors,
+    securities,
+)
 
 _DEFAULT_WEB_DIST = Path(__file__).resolve().parents[5] / "web" / "dist"
 
 
 def create_app(web_dist: Path | None = None) -> FastAPI:
-    app = FastAPI(title="callscore API")
+    app = FastAPI(title="callscore API", lifespan=deps.lifespan)
+    errors.register_error_handlers(app)
     router = APIRouter(prefix="/api")
 
     @router.get("/health")
@@ -21,6 +34,18 @@ def create_app(web_dist: Path | None = None) -> FastAPI:
         return {"status": "ok", "version": callscore_core.__version__}
 
     app.include_router(router)
+    for sub in (
+        meta.router,
+        runs.router,
+        methodologies.router,
+        analysts.router,
+        leaderboard.router,
+        securities.router,
+        overview.router,
+        sectors.router,
+        changes.router,
+    ):
+        app.include_router(sub, prefix="/api")
 
     dist = (web_dist or Path(os.environ.get("CALLSCORE_WEB_DIST", _DEFAULT_WEB_DIST))).resolve()
     if dist.is_dir():
