@@ -1,5 +1,6 @@
 """Application factory. All API routes live under ``/api``."""
 
+import logging
 import os
 from pathlib import Path
 
@@ -28,6 +29,13 @@ _DEFAULT_WEB_DIST = Path(__file__).resolve().parents[5] / "web" / "dist"
 
 
 def create_app(web_dist: Path | None = None) -> FastAPI:
+    # Minimal process logging: run/job lifecycle events carry ``run_id`` in
+    # ``extra`` (see services.calculation / services.jobs). Uvicorn installs
+    # its own handlers; basicConfig is a no-op when they already exist.
+    logging.basicConfig(
+        level=os.environ.get("CALLSCORE_LOG_LEVEL", "INFO").upper(),
+        format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    )
     app = FastAPI(title="callscore API", lifespan=deps.lifespan)
     errors.register_error_handlers(app)
     router = APIRouter(prefix="/api")

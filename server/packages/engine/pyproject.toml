@@ -11,14 +11,12 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "callscore-calc>=0.2,<0.3",
     "callscore-core>=0.1.0",
     "numpy>=2.0",
     "polars>=1.44,<2",
 ]
 
 [tool.uv.sources]
-callscore-calc = { workspace = true }
 callscore-core = { workspace = true }
 
 [build-system]

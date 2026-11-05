@@ -21,7 +21,7 @@ test.describe("empty first-use state", () => {
 
   test("leaderboard renders its shell without a run", async ({ page }) => {
     await page.goto("/leaderboard");
-    await expect(page.getByRole("heading", { name: "Leaderboard" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Leaderboard", exact: true })).toBeVisible();
     // NOTE: with zero runs the table stays in its loading state — the
     // leaderboard query is disabled (no run_id) so `isPending` never
     // resolves. Reported as a product bug; the page shell still renders.

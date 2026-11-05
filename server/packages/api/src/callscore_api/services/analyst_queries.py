@@ -983,6 +983,7 @@ def leaderboard(
     peer_group: str | None = None,
     metric: str | None = None,
     min_obs: int | None = None,
+    eligible: str | None = None,
     sort: str | None = None,
     order: str = "desc",
     limit: int | None = None,
@@ -993,7 +994,8 @@ def leaderboard(
     ``metric`` restricts rows to analysts with a stored (non-null value or
     explicit unavailable reason is NOT enough — requires ``value`` non-null)
     result for that catalog metric; ``min_obs`` filters on the investable
-    interval count ``n_investable``.
+    interval count ``n_investable``; ``eligible`` filters on ``is_ranked``
+    (``ranked``/``unranked``/``all``|``None``).
     """
     if order not in ("asc", "desc"):
         raise QueryError("order must be 'asc' or 'desc'")
@@ -1003,6 +1005,8 @@ def leaderboard(
         raise QueryError(f"unknown metric {metric!r}")
     if min_obs is not None and min_obs < 0:
         raise QueryError("min_obs must be >= 0")
+    if eligible not in (None, "all", "ranked", "unranked"):
+        raise QueryError("eligible must be one of: ranked, unranked, all")
 
     ac = AnalystComposite.__table__
     an = Analyst.__table__
@@ -1036,6 +1040,10 @@ def leaderboard(
     )
     if peer_group is not None:
         stmt = stmt.where(ac.c.peer_group == peer_group)
+    if eligible == "ranked":
+        stmt = stmt.where(ac.c.is_ranked.is_(True))
+    elif eligible == "unranked":
+        stmt = stmt.where(ac.c.is_ranked.is_(False))
     if min_obs is not None:
         stmt = stmt.where(func.coalesce(n_obs_sq.c.n_obs, 0) >= min_obs)
 

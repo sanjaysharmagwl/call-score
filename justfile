@@ -75,6 +75,48 @@ api-types:
 seed scale="small":
     cd server && uv run callscore-synth --scale {{scale}} --out ../data/db/callscore.db
 
+# Execute a scoring run against a DB:
+#   just run ../data/db/callscore.db 2025-12-31 [methodology] [scale]
+# methodology: 'default', a methodology JSON path, or a stored fingerprint.
+# scale is optional ('', small|medium|full) — a data-scale hint, not a filter.
+run db as_of methodology="default" scale="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$PWD"
+    db="{{db}}"
+    [[ "$db" = /* ]] || db="$root/$db"
+    args=(run --db "$db" --as-of "{{as_of}}" --methodology "{{methodology}}")
+    if [[ -n "{{scale}}" ]]; then args+=(--scale "{{scale}}"); fi
+    cd server && uv run callscore "${args[@]}"
+
+# Print a run's composite leaderboard:
+#   just leaderboard ../data/db/callscore.db RUN_ID [limit]
+leaderboard db run limit="20":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$PWD"
+    db="{{db}}"
+    [[ "$db" = /* ]] || db="$root/$db"
+    cd server && uv run callscore leaderboard --db "$db" --run {{run}} --limit {{limit}}
+
+# Run the Playwright E2E suite (builds the SPA, seeds throwaway DBs, serves
+# the API+SPA on :4173/:4174). First run: `cd web && pnpm exec playwright install chromium`
+e2e:
+    cd web && pnpm test:e2e
+
+# Benchmark seed + scoring run end-to-end on a profile (uses /usr/bin/time -l,
+# macOS only): writes data/db/bench-<profile>.db, never touches callscore.db.
+#   just benchmark [profile=full] [seed=20261006] [as_of=2025-12-31]
+benchmark profile="full" seed="20261006" as_of="2025-12-31":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    db="../data/db/bench-{{profile}}.db"
+    cd server
+    echo "== seed: callscore-synth --scale {{profile}} --seed {{seed}} =="
+    /usr/bin/time -l uv run callscore-synth --scale {{profile}} --seed {{seed}} --out "$db" --force
+    echo "== run: callscore run --scale {{profile}} --as-of {{as_of}} --methodology default =="
+    /usr/bin/time -l uv run callscore run --db "$db" --scale {{profile}} --as-of {{as_of}} --methodology default
+
 # Preview the docs site (reloads on edit)
 docs-serve:
     cd server && uv run --group docs mkdocs serve -f ../docs/mkdocs.yml

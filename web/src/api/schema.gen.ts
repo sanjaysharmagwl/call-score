@@ -5009,6 +5009,7 @@ export interface operations {
                 peer_group?: string | null;
                 metric?: string | null;
                 min_obs?: number | null;
+                eligible?: ("ranked" | "unranked" | "all") | null;
                 sort?: string | null;
                 order?: "asc" | "desc";
                 limit?: number | null;

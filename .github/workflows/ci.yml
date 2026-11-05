@@ -1,0 +1,29 @@
+name: ci
+
+# Full-repo integration check: `just check` (server + web + docs) plus the
+# Playwright E2E suite. The path-scoped workflows (server/web/docs) remain
+# for fast per-component feedback; this one is the release gate.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check-and-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v3
+      - uses: astral-sh/setup-uv@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: just setup
+      - run: just check
+      # E2E serves the built SPA + a seeded throwaway SQLite DB via the API.
+      - run: cd web && pnpm exec playwright install --with-deps chromium
+      - run: just e2e

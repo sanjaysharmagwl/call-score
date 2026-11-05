@@ -53,6 +53,22 @@ _LEG_INPUT_COLUMNS = (
     "end_point",
 )
 
+# Explicit schema for the leg-row dicts: ``unavailable_reason`` (and the
+# nullable end columns) are ``None`` on most rows, so inference would type
+# them ``Null`` and fail when the first string value appears.
+_LEG_ROW_SCHEMA: dict[str, pl.DataType] = {
+    "leg_id": pl.String(),
+    "interval_id": pl.String(),
+    "horizon": pl.String(),
+    "security_id": pl.String(),
+    "entry_session": pl.Date(),
+    "start_session": pl.Date(),
+    "start_point": pl.String(),
+    "end_session": pl.Date(),
+    "end_point": pl.String(),
+    "unavailable_reason": pl.String(),
+}
+
 
 def _point_after(session_a: date, point_a: str, session_b: date, point_b: str) -> bool:
     if session_a != session_b:
@@ -445,7 +461,7 @@ def build_returns(
             )
 
     if leg_rows:
-        legs = pl.DataFrame(leg_rows).with_columns(pl.col("unavailable_reason").cast(pl.String))
+        legs = pl.DataFrame(leg_rows, schema=_LEG_ROW_SCHEMA)
         priced = compute_legs(
             legs,
             security_daily=security_daily,

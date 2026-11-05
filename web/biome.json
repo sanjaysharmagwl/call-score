@@ -9,7 +9,9 @@
       "!dist",
       "!src/api/schema.gen.ts",
       "!src/routeTree.gen.ts",
-      "!pnpm-lock.yaml"
+      "!pnpm-lock.yaml",
+      "!test-results",
+      "!playwright-report"
     ]
   },
   "linter": {

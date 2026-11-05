@@ -15,6 +15,7 @@ nav:
   - Home: index.md
   - Getting started: getting-started.md
   - Architecture: architecture.md
+  - Performance: performance.md
   - Design: design/index.md
   - Decisions:
       - decisions/index.md

@@ -8,6 +8,7 @@ partial rows.
 """
 
 import json
+import logging
 from datetime import UTC, date, datetime, time, timedelta
 from importlib.metadata import PackageNotFoundError, version
 from typing import Any
@@ -22,6 +23,8 @@ from callscore_store.models import MethodologyVersion
 from callscore_store.repositories import derived, runs
 from callscore_store.repositories.base import Context
 from callscore_store.snapshots import SecurityFilter, Snapshot, load_input_snapshot
+
+logger = logging.getLogger(__name__)
 
 
 def _engine_version() -> str:
@@ -101,6 +104,10 @@ def execute_run(
         cutoff = cutoff.replace(tzinfo=UTC)
 
     runs.update_run_status(ctx, run_id, RunStatus.RUNNING)
+    logger.info(
+        "run_started",
+        extra={"run_id": run_id, "as_of_date": as_of_date.isoformat()},
+    )
     try:
         snapshot: Snapshot = load_input_snapshot(
             ctx, as_of_date, cutoff, universe_filter=universe_filter
@@ -134,12 +141,20 @@ def execute_run(
             stage_artifacts=result.stage_artifacts,
             source_fingerprint=snapshot.source_fingerprint,
         )
+        logger.info(
+            "run_succeeded",
+            extra={"run_id": run_id, "rows": sum(counts.values())},
+        )
     except Exception as exc:
         runs.update_run_status(
             ctx,
             run_id,
             RunStatus.FAILED,
             error={"type": type(exc).__name__, "message": str(exc)},
+        )
+        logger.error(
+            "run_failed",
+            extra={"run_id": run_id, "error_type": type(exc).__name__},
         )
         raise
     return counts

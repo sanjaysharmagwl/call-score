@@ -25,6 +25,7 @@ rows are bounded by the lease TTL and marked ``interrupted`` on startup via
 
 import hashlib
 import json
+import logging
 import os
 import threading
 from collections.abc import Callable, Iterable, Mapping
@@ -76,6 +77,8 @@ from callscore_store.repositories import jobs as repo_jobs
 from callscore_store.repositories.base import Context
 from callscore_store.repositories.runs import RunTransitionError
 from callscore_store.snapshots import SecurityFilter, load_input_snapshot
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Stage cache wiring
@@ -665,6 +668,10 @@ def execute_run_cached(
         cutoff = cutoff.replace(tzinfo=UTC)
 
     runs.update_run_status(ctx, run_id, RunStatus.RUNNING)
+    logger.info(
+        "run_started",
+        extra={"run_id": run_id, "as_of_date": as_of_date.isoformat()},
+    )
     try:
         snapshot = load_input_snapshot(
             ctx,
@@ -705,12 +712,20 @@ def execute_run_cached(
             stage_artifacts=result.stage_artifacts,
             source_fingerprint=snapshot.source_fingerprint,
         )
+        logger.info(
+            "run_succeeded",
+            extra={"run_id": run_id, "rows": sum(counts.values())},
+        )
     except Exception as exc:
         runs.update_run_status(
             ctx,
             run_id,
             RunStatus.FAILED,
             error={"type": type(exc).__name__, "message": str(exc)},
+        )
+        logger.error(
+            "run_failed",
+            extra={"run_id": run_id, "error_type": type(exc).__name__},
         )
         raise
     return counts
@@ -836,9 +851,18 @@ class JobCoordinator:
         """Execute ``run_id``; caller must hold the writer lease."""
         stage_count = 0
 
-        def on_stage(_stage: Stage, _hit: bool) -> None:
+        def on_stage(stage: Stage, hit: bool) -> None:
             nonlocal stage_count
             stage_count += 1
+            logger.info(
+                "run_stage",
+                extra={
+                    "run_id": run_id,
+                    "stage": stage.value,
+                    "cache_hit": hit,
+                    "stage_index": stage_count,
+                },
+            )
             # Progress is best-effort; never fail the job over it.
             with suppress(Exception):
                 runs.update_run_progress(

@@ -1036,6 +1036,29 @@ def generate(
     )
     events_frame = events_frame.sort("analyst_id", "security_id", "announced_ts", "event_id")
 
+    # A delisted security cannot be (re-)rated: drop events whose availability
+    # (max(effective_ts, knowledge_ts) — the engine's entry basis) falls on or
+    # after its delisting_date, since their entry session would be post-delist.
+    # Events available before the delisting date are kept so A_BANKRUPT's
+    # into-delisting call survives.
+    if frames["delistings"].height:
+        delist_df = (
+            frames["delistings"]
+            .select("security_id", "delisting_date")
+            .unique(subset=["security_id"], keep="first")
+        )
+        events_frame = (
+            events_frame.join(delist_df, on="security_id", how="left")
+            .filter(
+                pl.col("delisting_date").is_null()
+                | (
+                    pl.max_horizontal("effective_ts", "knowledge_ts").dt.date()
+                    < pl.col("delisting_date")
+                )
+            )
+            .drop("delisting_date")
+        )
+
     # --- oracle analyst/ employment / coverage augmentation --------------------- #
     oracle_rows = [
         {"analyst_id": aid, "name": _ORACLE_NAMES[aid], "firm_id": oracle_firm[aid]}

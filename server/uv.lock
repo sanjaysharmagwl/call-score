@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-10-29T07:11:47.756595Z"
+exclude-newer = "2026-10-29T14:16:41.42553Z"
 exclude-newer-span = "P7D"
 
 [manifest]
@@ -251,7 +251,6 @@ name = "callscore-engine"
 version = "0.1.0"
 source = { editable = "packages/engine" }
 dependencies = [
-    { name = "callscore-calc" },
     { name = "callscore-core" },
     { name = "numpy" },
     { name = "polars" },
@@ -259,7 +258,6 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "callscore-calc", editable = "packages/calc" },
     { name = "callscore-core", editable = "packages/core" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "polars", specifier = ">=1.44,<2" },
