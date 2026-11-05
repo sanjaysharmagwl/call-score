@@ -23,7 +23,7 @@ def _settings(tmp_path: Path) -> Settings:
 
 
 def _app(tmp_path: Path, *, routers: bool = True) -> FastAPI:
-    app = create_app()
+    app = create_app(web_dist=tmp_path / "no-dist")
     app.state.settings = _settings(tmp_path)
     if routers:
         app.include_router(meta_router.router, prefix="/api")

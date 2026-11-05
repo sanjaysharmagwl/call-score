@@ -11,12 +11,15 @@ import callscore_core
 from callscore_api import deps, errors
 from callscore_api.routers import (
     analysts,
+    backtests,
+    benchmarks,
     changes,
     leaderboard,
     meta,
     methodologies,
     overview,
     runs,
+    scenarios,
     sectors,
     securities,
 )
@@ -37,8 +40,11 @@ def create_app(web_dist: Path | None = None) -> FastAPI:
     for sub in (
         meta.router,
         runs.router,
+        scenarios.router,
         methodologies.router,
         analysts.router,
+        backtests.router,
+        benchmarks.router,
         leaderboard.router,
         securities.router,
         overview.router,

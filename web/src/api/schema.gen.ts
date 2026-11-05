@@ -196,6 +196,158 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/scenarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Scenarios
+         * @description List scenarios newest-first.
+         */
+        get: operations["list_scenarios_api_scenarios_get"];
+        put?: never;
+        /**
+         * Create Scenario
+         * @description Create a named scenario: base methodology + validated overrides.
+         */
+        post: operations["create_scenario_api_scenarios_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/scenarios/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compare Runs Endpoint
+         * @description Extended delta report between two arbitrary runs.
+         *
+         *     Complements ``GET /api/runs/compare`` (generic side-by-side summary)
+         *     with per-analyst score/rank deltas, ranked<->unranked transitions,
+         *     Spearman rank correlation, per-family/metric deltas and an explicit
+         *     universe-compatibility report.
+         */
+        get: operations["compare_runs_endpoint_api_scenarios_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/scenarios/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Execute Inline
+         * @description Execute an inline scenario spec (optionally ``persist=True``).
+         */
+        post: operations["execute_inline_api_scenarios_execute_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/scenarios/sensitivity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sensitivity Sweep
+         * @description Submit a bounded (<=25 combos) methodology parameter sweep.
+         */
+        post: operations["sensitivity_sweep_api_scenarios_sensitivity_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/scenarios/{scenario_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Scenario
+         * @description Scenario detail: resolved base methodology, overrides, run history.
+         */
+        get: operations["get_scenario_api_scenarios__scenario_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/scenarios/{scenario_id}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Execute Scenario
+         * @description Execute a stored scenario; links the submitted run into its config.
+         */
+        post: operations["execute_scenario_api_scenarios__scenario_id__execute_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/scenarios/{scenario_id}/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compare Scenario Run
+         * @description Delta report: the scenario's latest run vs ``other_run_id``.
+         *
+         *     When ``other_run_id`` is omitted the scenario's previous execution is
+         *     used; 422 when the scenario has no (or only one) recorded run.
+         */
+        get: operations["compare_scenario_run_api_scenarios__scenario_id__compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/methodologies": {
         parameters: {
             query?: never;
@@ -355,6 +507,243 @@ export interface paths {
         };
         /** Analyst Portfolio */
         get: operations["analyst_portfolio_api_analysts__analyst_id__portfolio_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/backtests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Backtests
+         * @description List backtests newest first; filter by lifecycle ``status``.
+         */
+        get: operations["list_backtests_api_backtests_get"];
+        put?: never;
+        /**
+         * Submit Backtest
+         * @description Submit a backtest; the spec is validated (422) before queueing.
+         */
+        post: operations["submit_backtest_api_backtests_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/backtests/{backtest_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Backtest
+         * @description Detail for one backtest: status, spec, artifacts, error.
+         */
+        get: operations["get_backtest_api_backtests__backtest_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/backtests/{backtest_id}/nav": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Backtest Nav
+         * @description NAV series; ``1w``/``1M`` resample to period-end, >2000 pts stride-downsample.
+         */
+        get: operations["backtest_nav_api_backtests__backtest_id__nav_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/backtests/{backtest_id}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Backtest Stats
+         * @description Scalar backtest statistics (empty until the run succeeds).
+         */
+        get: operations["backtest_stats_api_backtests__backtest_id__stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/backtests/{backtest_id}/trades": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Backtest Trades
+         * @description Trade list; ``format=csv`` exports up to ``EXPORT_ROW_CAP`` (50k) rows.
+         *
+         *     CSV exports are truncated at the cap with ``X-Export-Truncated: true``
+         *     and an ``X-Export-Note`` header (documented choice over a 422).
+         */
+        get: operations["backtest_trades_api_backtests__backtest_id__trades_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/backtests/{backtest_id}/attribution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Backtest Attribution
+         * @description Return attribution by ``sector`` / ``analyst`` / ``rating_action``.
+         */
+        get: operations["backtest_attribution_api_backtests__backtest_id__attribution_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/backtests/{backtest_id}/monthly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Backtest Monthly
+         * @description Monthly compounded returns (``prod(1 + month_return) == final nav``).
+         */
+        get: operations["backtest_monthly_api_backtests__backtest_id__monthly_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Benchmarks
+         * @description List benchmark definitions, ``benchmark_id`` order.
+         */
+        get: operations["list_benchmarks_api_benchmarks_get"];
+        put?: never;
+        /**
+         * Create Benchmark
+         * @description Create a ``kind='custom'`` benchmark definition (status ``draft``).
+         *
+         *     ``spec`` is validated as ``BenchmarkSpec`` — 422 on any violation.
+         *     Idempotent: an identical spec returns the existing row.
+         */
+        post: operations["create_benchmark_api_benchmarks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/benchmarks/{benchmark_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Benchmark
+         * @description Detail for one benchmark: stored spec + materialization info.
+         */
+        get: operations["get_benchmark_api_benchmarks__benchmark_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/benchmarks/{benchmark_id}/materialize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Materialize Benchmark
+         * @description Synchronously rebuild ``benchmark_daily`` rows for a custom benchmark.
+         *
+         *     Idempotent (delete + insert in one transaction). Engine/spec failures
+         *     mark the def ``failed`` and surface as 422/500 via the error handlers.
+         */
+        post: operations["materialize_benchmark_api_benchmarks__benchmark_id__materialize_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/benchmarks/{benchmark_id}/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Benchmark Series
+         * @description Materialized ``benchmark_daily`` rows (open/close levels) for charts.
+         */
+        get: operations["benchmark_series_api_benchmarks__benchmark_id__series_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -594,6 +983,48 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AnalystDelta
+         * @description One analyst's composite delta between two runs (``b - a``).
+         */
+        AnalystDelta: {
+            /** Analyst Id */
+            analyst_id: string;
+            /** In A */
+            in_a: boolean;
+            /** In B */
+            in_b: boolean;
+            /** Composite Score A */
+            composite_score_a?: number | null;
+            /** Composite Score B */
+            composite_score_b?: number | null;
+            /** Score Delta */
+            score_delta?: number | null;
+            /** Rank Overall A */
+            rank_overall_a?: number | null;
+            /** Rank Overall B */
+            rank_overall_b?: number | null;
+            /** Rank Delta */
+            rank_delta?: number | null;
+            /** Rank In Peer Group A */
+            rank_in_peer_group_a?: number | null;
+            /** Rank In Peer Group B */
+            rank_in_peer_group_b?: number | null;
+            /** Peer Rank Delta */
+            peer_rank_delta?: number | null;
+            /**
+             * Is Ranked A
+             * @default false
+             */
+            is_ranked_a: boolean;
+            /**
+             * Is Ranked B
+             * @default false
+             */
+            is_ranked_b: boolean;
+            /** Transition */
+            transition: string;
+        };
         /** AnalystLeaderboardEntry */
         AnalystLeaderboardEntry: {
             /** Analyst Id */
@@ -703,11 +1134,388 @@ export interface components {
              */
             bottom: components["schemas"]["AnalystLeaderboardEntry"][];
         };
+        /** BacktestAttributionResponse */
+        BacktestAttributionResponse: {
+            /** Data */
+            data: components["schemas"]["BacktestAttributionRow"][];
+        };
+        /** BacktestAttributionRow */
+        BacktestAttributionRow: {
+            /** Dimension */
+            dimension: string;
+            /** Group Key */
+            group_key: string;
+            /** Contribution */
+            contribution: number;
+        };
+        /**
+         * BacktestCreateRequest
+         * @description Body of ``POST /api/backtests``.
+         *
+         *     ``spec`` is validated server-side as ``callscore_engine.backtest.
+         *     BacktestSpec`` (422 on any violation — including the dynamic-selection
+         *     requirement that ``top_n``/``top_quartile`` set
+         *     ``score_lookback_sessions``). The optional top-level ``start_date`` /
+         *     ``end_date`` / ``benchmark_id`` override the same-named spec fields.
+         */
+        BacktestCreateRequest: {
+            /** Name */
+            name?: string | null;
+            /** Spec */
+            spec: {
+                [key: string]: unknown;
+            };
+            /** Start Date */
+            start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
+            /** Benchmark Id */
+            benchmark_id?: string | null;
+        };
+        /**
+         * BacktestDetail
+         * @description Full single-backtest view: validated spec + result artifacts.
+         */
+        BacktestDetail: {
+            /** Backtest Id */
+            backtest_id: string;
+            /** Name */
+            name?: string | null;
+            /** Status */
+            status: string;
+            /** Created At */
+            created_at?: string | null;
+            /** Started At */
+            started_at?: string | null;
+            /** Finished At */
+            finished_at?: string | null;
+            /** Benchmark Id */
+            benchmark_id?: string | null;
+            error?: components["schemas"]["BacktestErrorInfo"] | null;
+            /** Spec */
+            spec?: {
+                [key: string]: unknown;
+            } | null;
+            /** Monthly Returns */
+            monthly_returns?: {
+                [key: string]: unknown;
+            }[] | null;
+            /** Attribution */
+            attribution?: {
+                [key: string]: unknown;
+            }[] | null;
+        };
+        /**
+         * BacktestErrorInfo
+         * @description Parsed ``config_json.error`` written on failure.
+         */
+        BacktestErrorInfo: {
+            /** Type */
+            type: string;
+            /** Message */
+            message: string;
+        };
+        /** BacktestListResponse */
+        BacktestListResponse: {
+            /** Data */
+            data: components["schemas"]["BacktestSummary"][];
+            pagination: components["schemas"]["PaginationMeta"];
+        };
+        /** BacktestMonthlyResponse */
+        BacktestMonthlyResponse: {
+            /** Data */
+            data: components["schemas"]["BacktestMonthlyRow"][];
+        };
+        /** BacktestMonthlyRow */
+        BacktestMonthlyRow: {
+            /** Year */
+            year: number;
+            /** Month */
+            month: number;
+            /** Month Return */
+            month_return: number;
+            /** Nav End */
+            nav_end: number;
+        };
+        /** BacktestNavResponse */
+        BacktestNavResponse: {
+            /** Data */
+            data: components["schemas"]["BacktestNavRow"][];
+            /** Interval */
+            interval: string;
+            /** Downsampled */
+            downsampled: boolean;
+            /** Source Rows */
+            source_rows: number;
+            /** Total */
+            total: number;
+        };
+        /** BacktestNavRow */
+        BacktestNavRow: {
+            /**
+             * Session Date
+             * Format: date
+             */
+            session_date: string;
+            /** Nav */
+            nav: number;
+            /** Benchmark Nav */
+            benchmark_nav: number;
+            /** Active Return */
+            active_return?: number | null;
+            /** Gross Exposure */
+            gross_exposure: number;
+            /** Turnover */
+            turnover: number;
+            /** Cost */
+            cost: number;
+            /** Drawdown */
+            drawdown: number;
+        };
+        /** BacktestStatRow */
+        BacktestStatRow: {
+            /** Stat Code */
+            stat_code: string;
+            /** Value */
+            value?: number | null;
+            /** Std Err */
+            std_err?: number | null;
+            /** Ci Low */
+            ci_low?: number | null;
+            /** Ci High */
+            ci_high?: number | null;
+            /** Detail Json */
+            detail_json?: string | null;
+        };
+        /** BacktestStatsResponse */
+        BacktestStatsResponse: {
+            /** Data */
+            data: components["schemas"]["BacktestStatRow"][];
+        };
+        /**
+         * BacktestSubmitResponse
+         * @description ``202`` response for ``POST /api/backtests``.
+         */
+        BacktestSubmitResponse: {
+            /** Backtest Id */
+            backtest_id: string;
+            /** Status */
+            status: string;
+        };
+        /**
+         * BacktestSummary
+         * @description List-row view of a ``backtest``.
+         */
+        BacktestSummary: {
+            /** Backtest Id */
+            backtest_id: string;
+            /** Name */
+            name?: string | null;
+            /** Status */
+            status: string;
+            /** Created At */
+            created_at?: string | null;
+            /** Started At */
+            started_at?: string | null;
+            /** Finished At */
+            finished_at?: string | null;
+            /** Benchmark Id */
+            benchmark_id?: string | null;
+            error?: components["schemas"]["BacktestErrorInfo"] | null;
+        };
+        /** BacktestTradeRow */
+        BacktestTradeRow: {
+            /** Trade Seq */
+            trade_seq: number;
+            /**
+             * Session Date
+             * Format: date
+             */
+            session_date: string;
+            /** Security Id */
+            security_id: string;
+            /** Side */
+            side: string;
+            /** Quantity */
+            quantity: number;
+            /** Price */
+            price: string | number;
+            /** Notional */
+            notional?: string | number | null;
+            /** Fee */
+            fee?: string | number | null;
+            /** Realized Pnl */
+            realized_pnl?: string | number | null;
+        };
+        /** BacktestTradesResponse */
+        BacktestTradesResponse: {
+            /** Data */
+            data: components["schemas"]["BacktestTradeRow"][];
+            pagination: components["schemas"]["PaginationMeta"];
+            /**
+             * Truncated
+             * @default false
+             */
+            truncated: boolean;
+        };
+        /**
+         * BenchmarkCreateRequest
+         * @description Body of ``POST /api/benchmarks``.
+         *
+         *     ``spec`` is validated server-side as ``callscore_engine.benchmarks.
+         *     BenchmarkSpec`` (422 on any violation). ``spec.benchmark_id`` may be
+         *     omitted — a deterministic ``CSTM_<hash>`` id is generated.
+         */
+        BenchmarkCreateRequest: {
+            /** Name */
+            name?: string | null;
+            /** Spec */
+            spec: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * BenchmarkDetail
+         * @description Full single-benchmark view: stored spec + materialization info.
+         */
+        BenchmarkDetail: {
+            /** Benchmark Id */
+            benchmark_id: string;
+            /** Kind */
+            kind: string;
+            /** Name */
+            name?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Preset */
+            preset?: string | null;
+            /** Weighting */
+            weighting?: string | null;
+            /** Rebalance */
+            rebalance?: string | null;
+            /** Row Count */
+            row_count?: number | null;
+            /** Spec */
+            spec?: {
+                [key: string]: unknown;
+            } | null;
+            materialization?: components["schemas"]["BenchmarkMaterialization"] | null;
+            /** Error */
+            error?: {
+                [key: string]: unknown;
+            } | null;
+            /** Created At */
+            created_at?: string | null;
+        };
+        /** BenchmarkListResponse */
+        BenchmarkListResponse: {
+            /** Data */
+            data: components["schemas"]["BenchmarkSummary"][];
+            pagination: components["schemas"]["PaginationMeta"];
+        };
+        /**
+         * BenchmarkMaterialization
+         * @description Last successful materialization metadata.
+         */
+        BenchmarkMaterialization: {
+            /** As Of Date */
+            as_of_date?: string | null;
+            /** Row Count */
+            row_count?: number | null;
+            /** Exclusion Counts */
+            exclusion_counts?: {
+                [key: string]: number;
+            };
+            /** Materialized At */
+            materialized_at?: string | null;
+            /** Revision */
+            revision?: number | null;
+        };
+        /**
+         * BenchmarkMaterializeResponse
+         * @description Result of ``POST /api/benchmarks/{id}/materialize`` (synchronous).
+         */
+        BenchmarkMaterializeResponse: {
+            /** Benchmark Id */
+            benchmark_id: string;
+            /** Status */
+            status: string;
+            /** Row Count */
+            row_count: number;
+            /**
+             * As Of Date
+             * Format: date
+             */
+            as_of_date: string;
+            /** Exclusion Counts */
+            exclusion_counts: {
+                [key: string]: number;
+            };
+            /** Revision */
+            revision: number;
+        };
         /**
          * BenchmarkMode
          * @enum {string}
          */
         BenchmarkMode: "market" | "sector" | "beta_adjusted" | "custom";
+        /** BenchmarkSeriesResponse */
+        BenchmarkSeriesResponse: {
+            /** Data */
+            data: components["schemas"]["BenchmarkSeriesRow"][];
+            /** From Date */
+            from_date?: string | null;
+            /** To Date */
+            to_date?: string | null;
+            /** Total */
+            total: number;
+        };
+        /** BenchmarkSeriesRow */
+        BenchmarkSeriesRow: {
+            /**
+             * Session Date
+             * Format: date
+             */
+            session_date: string;
+            /** Open Level */
+            open_level: number;
+            /** Close Level */
+            close_level: number;
+        };
+        /**
+         * BenchmarkSubmitResponse
+         * @description ``201`` response for ``POST /api/benchmarks``.
+         */
+        BenchmarkSubmitResponse: {
+            /** Benchmark Id */
+            benchmark_id: string;
+            /** Status */
+            status: string;
+            /** Created */
+            created: boolean;
+        };
+        /**
+         * BenchmarkSummary
+         * @description List-row view of a ``benchmark_def``.
+         */
+        BenchmarkSummary: {
+            /** Benchmark Id */
+            benchmark_id: string;
+            /** Kind */
+            kind: string;
+            /** Name */
+            name?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Preset */
+            preset?: string | null;
+            /** Weighting */
+            weighting?: string | null;
+            /** Rebalance */
+            rebalance?: string | null;
+            /** Row Count */
+            row_count?: number | null;
+        };
         /**
          * ChangeItem
          * @description One audit entry: a rating event or a run lifecycle transition.
@@ -789,6 +1597,30 @@ export interface components {
             listing_date: string;
             /** Delisting Date */
             delisting_date?: string | null;
+        };
+        /**
+         * CompareSummary
+         * @description Aggregate counts for a scenario run comparison.
+         */
+        CompareSummary: {
+            /** N Analysts A */
+            n_analysts_a: number;
+            /** N Analysts B */
+            n_analysts_b: number;
+            /** N Common */
+            n_common: number;
+            /** Only In A */
+            only_in_a: number;
+            /** Only In B */
+            only_in_b: number;
+            /** Ranked To Ranked */
+            ranked_to_ranked: number;
+            /** Ranked To Unranked */
+            ranked_to_unranked: number;
+            /** Unranked To Ranked */
+            unranked_to_ranked: number;
+            /** Unranked To Unranked */
+            unranked_to_unranked: number;
         };
         /** CompositeBlock */
         CompositeBlock: {
@@ -944,6 +1776,21 @@ export interface components {
             weight_source: string;
         };
         /**
+         * FamilyDelta
+         * @description Coarse per-family rollup of :class:`MetricDelta` mean deltas.
+         *
+         *     ``mean_delta`` is the unweighted mean of the family's per-metric mean
+         *     deltas — metric units differ, so treat it as a directional signal only.
+         */
+        FamilyDelta: {
+            /** Family */
+            family: string;
+            /** N Metrics */
+            n_metrics: number;
+            /** Mean Delta */
+            mean_delta: number;
+        };
+        /**
          * FamilyScores
          * @description Per-family mean oriented peer-z scores (display mirror of composite).
          */
@@ -1089,6 +1936,26 @@ export interface components {
             n_obs?: number | null;
             /** Unavailable Reason */
             unavailable_reason?: string | null;
+        };
+        /**
+         * InvalidationReport
+         * @description Which pipeline stages a methodology change invalidates.
+         */
+        InvalidationReport: {
+            /** Methodology A Fingerprint */
+            methodology_a_fingerprint: string;
+            /** Methodology B Fingerprint */
+            methodology_b_fingerprint: string;
+            /** Identical */
+            identical: boolean;
+            /** Changed Fields */
+            changed_fields?: components["schemas"]["FieldChange"][];
+            /** Stages */
+            stages?: components["schemas"]["StageImpact"][];
+            /** Affected Stages */
+            affected_stages?: string[];
+            /** First Affected Stage */
+            first_affected_stage?: string | null;
         };
         /**
          * LastRunInfo
@@ -1433,6 +2300,24 @@ export interface components {
             fingerprint: string;
         };
         /**
+         * MetricDelta
+         * @description Per-metric cross-analyst delta summary (``b - a`` on ``value``).
+         */
+        MetricDelta: {
+            /** Metric Code */
+            metric_code: string;
+            /** Family */
+            family: string;
+            /** N Pairs */
+            n_pairs: number;
+            /** Mean Delta */
+            mean_delta: number;
+            /** Mean Abs Delta */
+            mean_abs_delta: number;
+            /** Max Abs Delta */
+            max_abs_delta: number;
+        };
+        /**
          * MetricDetail
          * @description One ``analyst_metric`` row enriched with catalog metadata.
          */
@@ -1676,6 +2561,21 @@ export interface components {
              */
             source_rows: number;
             provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+        };
+        /**
+         * RankCorrelation
+         * @description Spearman rank correlation over analysts ranked in BOTH runs.
+         */
+        RankCorrelation: {
+            /**
+             * Method
+             * @default spearman_overall_rank
+             */
+            method: string;
+            /** N */
+            n: number;
+            /** Spearman */
+            spearman?: number | null;
         };
         /**
          * RatingDetailResponse
@@ -2140,6 +3040,231 @@ export interface components {
             universe_filter?: string[] | null;
             error?: components["schemas"]["RunErrorInfo"] | null;
         };
+        /**
+         * ScenarioCompareResponse
+         * @description Delta report between two runs (``GET /scenarios/compare`` and
+         *     ``GET /scenarios/{id}/compare``).
+         */
+        ScenarioCompareResponse: {
+            /** Run A Id */
+            run_a_id: string;
+            /** Run B Id */
+            run_b_id: string;
+            /** Run A Status */
+            run_a_status: string;
+            /** Run B Status */
+            run_b_status: string;
+            /** As Of Date A */
+            as_of_date_a?: string | null;
+            /** As Of Date B */
+            as_of_date_b?: string | null;
+            /** Methodology A Fingerprint */
+            methodology_a_fingerprint?: string | null;
+            /** Methodology B Fingerprint */
+            methodology_b_fingerprint?: string | null;
+            universe: components["schemas"]["UniverseComparison"];
+            summary: components["schemas"]["CompareSummary"];
+            rank_correlation: components["schemas"]["RankCorrelation"];
+            /** Analysts */
+            analysts?: components["schemas"]["AnalystDelta"][];
+            /** Metric Deltas */
+            metric_deltas?: components["schemas"]["MetricDelta"][];
+            /** Family Deltas */
+            family_deltas?: components["schemas"]["FamilyDelta"][];
+        };
+        /**
+         * ScenarioCreateRequest
+         * @description Body of ``POST /api/scenarios``.
+         *
+         *     ``base_methodology`` selects the methodology the overrides apply to:
+         *
+         *     * ``None``/``"default"`` — the built-in :class:`Methodology` preset;
+         *     * a 64-hex fingerprint — a stored ``methodology_version`` (404 unknown);
+         *     * an inline methodology object — validated as :class:`Methodology`.
+         *
+         *     ``overrides`` is a partial ``Methodology`` payload: every key must be a
+         *     real methodology field (422 otherwise); ``position_weights`` and
+         *     ``family_weights`` dicts are shallow-merged onto the base. The merged
+         *     result must itself be a valid methodology.
+         */
+        ScenarioCreateRequest: {
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /** Base Methodology */
+            base_methodology?: components["schemas"]["Methodology"] | string | null;
+            /** Overrides */
+            overrides?: {
+                [key: string]: unknown;
+            };
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+        };
+        /**
+         * ScenarioDetail
+         * @description Full scenario view: resolved base params and run/sweep history.
+         */
+        ScenarioDetail: {
+            /** Scenario Id */
+            scenario_id: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Base Fingerprint */
+            base_fingerprint?: string | null;
+            /** Base Ref */
+            base_ref?: string | null;
+            /** Overrides */
+            overrides?: {
+                [key: string]: unknown;
+            };
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+            /**
+             * Run Count
+             * @default 0
+             */
+            run_count: number;
+            /** Last Run Id */
+            last_run_id?: string | null;
+            base_methodology?: components["schemas"]["Methodology"] | null;
+            /** Run Ids */
+            run_ids?: string[];
+            /** Last Execution */
+            last_execution?: {
+                [key: string]: unknown;
+            } | null;
+            /** Sweeps */
+            sweeps?: {
+                [key: string]: unknown;
+            }[];
+        };
+        /**
+         * ScenarioExecuteRequest
+         * @description Body of ``POST /api/scenarios/{id}/execute``.
+         */
+        ScenarioExecuteRequest: {
+            /**
+             * As Of Date
+             * Format: date
+             */
+            as_of_date: string;
+            /** Knowledge Cutoff */
+            knowledge_cutoff?: string | null;
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+        };
+        /**
+         * ScenarioExecuteResponse
+         * @description ``202`` response for scenario execution.
+         */
+        ScenarioExecuteResponse: {
+            /** Scenario Id */
+            scenario_id?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Run Id */
+            run_id: string;
+            /** Status */
+            status: string;
+            /** Created */
+            created: boolean;
+            /** Methodology Fingerprint */
+            methodology_fingerprint: string;
+            /**
+             * As Of Date
+             * Format: date
+             */
+            as_of_date: string;
+            /**
+             * Knowledge Cutoff
+             * Format: date-time
+             */
+            knowledge_cutoff: string;
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+            invalidation: components["schemas"]["InvalidationReport"];
+        };
+        /**
+         * ScenarioInlineExecuteRequest
+         * @description Body of ``POST /api/scenarios/execute`` — run an unsaved scenario.
+         *
+         *     Same fields as :class:`ScenarioCreateRequest` plus the execution
+         *     parameters; ``persist=True`` also stores it as a scenario first.
+         */
+        ScenarioInlineExecuteRequest: {
+            /**
+             * As Of Date
+             * Format: date
+             */
+            as_of_date: string;
+            /** Knowledge Cutoff */
+            knowledge_cutoff?: string | null;
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+            /** Name */
+            name?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Base Methodology */
+            base_methodology?: components["schemas"]["Methodology"] | string | null;
+            /** Overrides */
+            overrides?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Persist
+             * @default false
+             */
+            persist: boolean;
+        };
+        /** ScenarioListResponse */
+        ScenarioListResponse: {
+            /** Data */
+            data: components["schemas"]["ScenarioSummary"][];
+            pagination: components["schemas"]["PaginationMeta"];
+        };
+        /**
+         * ScenarioSummary
+         * @description List-row view of a stored scenario.
+         */
+        ScenarioSummary: {
+            /** Scenario Id */
+            scenario_id: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Base Fingerprint */
+            base_fingerprint?: string | null;
+            /** Base Ref */
+            base_ref?: string | null;
+            /** Overrides */
+            overrides?: {
+                [key: string]: unknown;
+            };
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+            /**
+             * Run Count
+             * @default 0
+             */
+            run_count: number;
+            /** Last Run Id */
+            last_run_id?: string | null;
+        };
         /** ScoreBucket */
         ScoreBucket: {
             /** Bucket */
@@ -2317,6 +3442,67 @@ export interface components {
              */
             by_horizon: components["schemas"]["HorizonAggregate"][];
         };
+        /**
+         * SensitivitySweepRequest
+         * @description Body of ``POST /api/scenarios/sensitivity``.
+         *
+         *     Exactly one sweep dimension: ``param_path`` + ``values`` (dotted/indexed
+         *     path into the methodology JSON, e.g. ``transaction_cost_bps`` or
+         *     ``position_weights.buy``), or ``overrides`` whose values may be lists
+         *     (cartesian product). Total combinations are hard-capped at 25.
+         *
+         *     ``scenario_id`` sweeps on top of that scenario's effective methodology;
+         *     otherwise ``base_methodology`` (default: the built-in preset) is used.
+         */
+        SensitivitySweepRequest: {
+            /**
+             * As Of Date
+             * Format: date
+             */
+            as_of_date: string;
+            /** Knowledge Cutoff */
+            knowledge_cutoff?: string | null;
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+            /** Base Methodology */
+            base_methodology?: components["schemas"]["Methodology"] | string | null;
+            /** Scenario Id */
+            scenario_id?: string | null;
+            /** Param Path */
+            param_path?: string | null;
+            /** Values */
+            values?: unknown[] | null;
+            /** Overrides */
+            overrides?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /**
+         * SensitivitySweepResponse
+         * @description ``202`` response for a sensitivity sweep.
+         */
+        SensitivitySweepResponse: {
+            /** Sweep Id */
+            sweep_id: string;
+            /** Count */
+            count: number;
+            /**
+             * As Of Date
+             * Format: date
+             */
+            as_of_date: string;
+            /**
+             * Knowledge Cutoff
+             * Format: date-time
+             */
+            knowledge_cutoff: string;
+            /** Universe Filter */
+            universe_filter?: string[] | null;
+            /** Scenario Id */
+            scenario_id?: string | null;
+            /** Jobs */
+            jobs?: components["schemas"]["SweepJob"][];
+        };
         /** ShrinkageInfo */
         ShrinkageInfo: {
             /** Method */
@@ -2362,6 +3548,38 @@ export interface components {
             /** Is Lead */
             is_lead?: boolean | null;
         };
+        /**
+         * StageImpact
+         * @description Per-stage invalidation detail inside an :class:`InvalidationReport`.
+         */
+        StageImpact: {
+            /** Stage */
+            stage: string;
+            /** Fields Changed */
+            fields_changed?: string[];
+            /** Fingerprint Changes */
+            fingerprint_changes: boolean;
+        };
+        /**
+         * SweepJob
+         * @description One submitted combination inside a sensitivity sweep.
+         */
+        SweepJob: {
+            /** Index */
+            index: number;
+            /** Spec */
+            spec: {
+                [key: string]: unknown;
+            };
+            /** Methodology Fingerprint */
+            methodology_fingerprint: string;
+            /** Run Id */
+            run_id: string;
+            /** Status */
+            status: string;
+            /** Created */
+            created: boolean;
+        };
         /** TargetOutcomeItem */
         TargetOutcomeItem: {
             /** Event Id */
@@ -2396,6 +3614,20 @@ export interface components {
             hit?: boolean | null;
             /** Is Matured */
             is_matured: boolean;
+        };
+        /**
+         * UniverseComparison
+         * @description Explicit universe-compatibility report for a run comparison.
+         */
+        UniverseComparison: {
+            /** A */
+            a?: string[] | null;
+            /** B */
+            b?: string[] | null;
+            /** Compatible */
+            compatible: boolean;
+            /** Intersection */
+            intersection?: string[] | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -2702,6 +3934,270 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RunSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_scenarios_api_scenarios_get: {
+        parameters: {
+            query?: {
+                /** @description Page size (max 500) */
+                limit?: number;
+                /** @description Row offset */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_scenario_api_scenarios_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    compare_runs_endpoint_api_scenarios_compare_get: {
+        parameters: {
+            query: {
+                a: string;
+                b: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioCompareResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    execute_inline_api_scenarios_execute_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioInlineExecuteRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioExecuteResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sensitivity_sweep_api_scenarios_sensitivity_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensitivitySweepRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensitivitySweepResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_scenario_api_scenarios__scenario_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scenario_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    execute_scenario_api_scenarios__scenario_id__execute_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scenario_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioExecuteRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioExecuteResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    compare_scenario_run_api_scenarios__scenario_id__compare_get: {
+        parameters: {
+            query?: {
+                other_run_id?: string | null;
+            };
+            header?: never;
+            path: {
+                scenario_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioCompareResponse"];
                 };
             };
             /** @description Validation Error */
@@ -3063,6 +4559,435 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PortfolioResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_backtests_api_backtests_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["RunStatus"] | null;
+                /** @description Page size (max 500) */
+                limit?: number;
+                /** @description Row offset */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_backtest_api_backtests_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BacktestCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestSubmitResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_backtest_api_backtests__backtest_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                backtest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    backtest_nav_api_backtests__backtest_id__nav_get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+                interval?: "1d" | "1w" | "1M";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                backtest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestNavResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    backtest_stats_api_backtests__backtest_id__stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                backtest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestStatsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    backtest_trades_api_backtests__backtest_id__trades_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                format?: "json" | "csv";
+            };
+            header?: never;
+            path: {
+                backtest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestTradesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    backtest_attribution_api_backtests__backtest_id__attribution_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                backtest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestAttributionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    backtest_monthly_api_backtests__backtest_id__monthly_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                backtest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestMonthlyResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_benchmarks_api_benchmarks_get: {
+        parameters: {
+            query?: {
+                /** @description Filter by lifecycle status */
+                status?: string | null;
+                /** @description Page size (max 500) */
+                limit?: number;
+                /** @description Row offset */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_benchmark_api_benchmarks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BenchmarkCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkSubmitResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_benchmark_api_benchmarks__benchmark_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                benchmark_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    materialize_benchmark_api_benchmarks__benchmark_id__materialize_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                benchmark_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkMaterializeResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    benchmark_series_api_benchmarks__benchmark_id__series_get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+            };
+            header?: never;
+            path: {
+                benchmark_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkSeriesResponse"];
                 };
             };
             /** @description Validation Error */

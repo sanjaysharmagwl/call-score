@@ -12,9 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChangesRouteImport } from './routes/changes'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as MethodologiesRouteImport } from './routes/methodologies'
+import { Route as ScenariosRouteImport } from './routes/scenarios'
 import { Route as SectorsRouteImport } from './routes/sectors'
+import { Route as SecuritiesRouteImport } from './routes/securities'
+import { Route as AnalystsIndexRouteImport } from './routes/analysts.index'
 import { Route as AnalystsAnalystIdRouteImport } from './routes/analysts.$analystId'
-import { Route as SecuritiesSecurityIdRouteImport } from './routes/securities.$securityId'
+import { Route as ScenariosScenarioIdRouteImport } from './routes/scenarios/$scenarioId'
+import { Route as SectorsSectorIdRouteImport } from './routes/sectors_.$sectorId'
+import { Route as SecuritiesSecurityIdRouteImport } from './routes/securities_.$securityId'
+import { Route as AnalystsAnalystIdRatingsIntervalIdRouteImport } from './routes/analysts_.$analystId.ratings.$intervalId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -31,9 +38,29 @@ const LeaderboardRoute = LeaderboardRouteImport.update({
   path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MethodologiesRoute = MethodologiesRouteImport.update({
+  id: '/methodologies',
+  path: '/methodologies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScenariosRoute = ScenariosRouteImport.update({
+  id: '/scenarios',
+  path: '/scenarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SectorsRoute = SectorsRouteImport.update({
   id: '/sectors',
   path: '/sectors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecuritiesRoute = SecuritiesRouteImport.update({
+  id: '/securities',
+  path: '/securities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalystsIndexRoute = AnalystsIndexRouteImport.update({
+  id: '/analysts/',
+  path: '/analysts/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalystsAnalystIdRoute = AnalystsAnalystIdRouteImport.update({
@@ -41,36 +68,73 @@ const AnalystsAnalystIdRoute = AnalystsAnalystIdRouteImport.update({
   path: '/analysts/$analystId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScenariosScenarioIdRoute = ScenariosScenarioIdRouteImport.update({
+  id: '/$scenarioId',
+  path: '/$scenarioId',
+  getParentRoute: () => ScenariosRoute,
+} as any)
+const SectorsSectorIdRoute = SectorsSectorIdRouteImport.update({
+  id: '/sectors_/$sectorId',
+  path: '/sectors/$sectorId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SecuritiesSecurityIdRoute = SecuritiesSecurityIdRouteImport.update({
-  id: '/securities/$securityId',
+  id: '/securities_/$securityId',
   path: '/securities/$securityId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalystsAnalystIdRatingsIntervalIdRoute =
+  AnalystsAnalystIdRatingsIntervalIdRouteImport.update({
+    id: '/analysts_/$analystId/ratings/$intervalId',
+    path: '/analysts/$analystId/ratings/$intervalId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/changes': typeof ChangesRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/methodologies': typeof MethodologiesRoute
+  '/scenarios': typeof ScenariosRouteWithChildren
   '/sectors': typeof SectorsRoute
+  '/securities': typeof SecuritiesRoute
   '/analysts/$analystId': typeof AnalystsAnalystIdRoute
+  '/scenarios/$scenarioId': typeof ScenariosScenarioIdRoute
+  '/sectors/$sectorId': typeof SectorsSectorIdRoute
   '/securities/$securityId': typeof SecuritiesSecurityIdRoute
+  '/analysts/': typeof AnalystsIndexRoute
+  '/analysts/$analystId/ratings/$intervalId': typeof AnalystsAnalystIdRatingsIntervalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/changes': typeof ChangesRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/methodologies': typeof MethodologiesRoute
+  '/scenarios': typeof ScenariosRouteWithChildren
   '/sectors': typeof SectorsRoute
+  '/securities': typeof SecuritiesRoute
   '/analysts/$analystId': typeof AnalystsAnalystIdRoute
+  '/scenarios/$scenarioId': typeof ScenariosScenarioIdRoute
+  '/sectors/$sectorId': typeof SectorsSectorIdRoute
   '/securities/$securityId': typeof SecuritiesSecurityIdRoute
+  '/analysts': typeof AnalystsIndexRoute
+  '/analysts/$analystId/ratings/$intervalId': typeof AnalystsAnalystIdRatingsIntervalIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/changes': typeof ChangesRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/methodologies': typeof MethodologiesRoute
+  '/scenarios': typeof ScenariosRouteWithChildren
   '/sectors': typeof SectorsRoute
+  '/securities': typeof SecuritiesRoute
   '/analysts/$analystId': typeof AnalystsAnalystIdRoute
-  '/securities/$securityId': typeof SecuritiesSecurityIdRoute
+  '/scenarios/$scenarioId': typeof ScenariosScenarioIdRoute
+  '/sectors_/$sectorId': typeof SectorsSectorIdRoute
+  '/securities_/$securityId': typeof SecuritiesSecurityIdRoute
+  '/analysts/': typeof AnalystsIndexRoute
+  '/analysts_/$analystId/ratings/$intervalId': typeof AnalystsAnalystIdRatingsIntervalIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -78,34 +142,61 @@ export interface FileRouteTypes {
     | '/'
     | '/changes'
     | '/leaderboard'
+    | '/methodologies'
+    | '/scenarios'
     | '/sectors'
+    | '/securities'
     | '/analysts/$analystId'
+    | '/scenarios/$scenarioId'
+    | '/sectors/$sectorId'
     | '/securities/$securityId'
+    | '/analysts/'
+    | '/analysts/$analystId/ratings/$intervalId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/changes'
     | '/leaderboard'
+    | '/methodologies'
+    | '/scenarios'
     | '/sectors'
+    | '/securities'
     | '/analysts/$analystId'
+    | '/scenarios/$scenarioId'
+    | '/sectors/$sectorId'
     | '/securities/$securityId'
+    | '/analysts'
+    | '/analysts/$analystId/ratings/$intervalId'
   id:
     | '__root__'
     | '/'
     | '/changes'
     | '/leaderboard'
+    | '/methodologies'
+    | '/scenarios'
     | '/sectors'
+    | '/securities'
     | '/analysts/$analystId'
-    | '/securities/$securityId'
+    | '/scenarios/$scenarioId'
+    | '/sectors_/$sectorId'
+    | '/securities_/$securityId'
+    | '/analysts/'
+    | '/analysts_/$analystId/ratings/$intervalId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChangesRoute: typeof ChangesRoute
   LeaderboardRoute: typeof LeaderboardRoute
+  MethodologiesRoute: typeof MethodologiesRoute
+  ScenariosRoute: typeof ScenariosRouteWithChildren
   SectorsRoute: typeof SectorsRoute
+  SecuritiesRoute: typeof SecuritiesRoute
   AnalystsAnalystIdRoute: typeof AnalystsAnalystIdRoute
+  SectorsSectorIdRoute: typeof SectorsSectorIdRoute
   SecuritiesSecurityIdRoute: typeof SecuritiesSecurityIdRoute
+  AnalystsIndexRoute: typeof AnalystsIndexRoute
+  AnalystsAnalystIdRatingsIntervalIdRoute: typeof AnalystsAnalystIdRatingsIntervalIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -131,11 +222,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/methodologies': {
+      id: '/methodologies'
+      path: '/methodologies'
+      fullPath: '/methodologies'
+      preLoaderRoute: typeof MethodologiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scenarios': {
+      id: '/scenarios'
+      path: '/scenarios'
+      fullPath: '/scenarios'
+      preLoaderRoute: typeof ScenariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sectors': {
       id: '/sectors'
       path: '/sectors'
       fullPath: '/sectors'
       preLoaderRoute: typeof SectorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/securities': {
+      id: '/securities'
+      path: '/securities'
+      fullPath: '/securities'
+      preLoaderRoute: typeof SecuritiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analysts/': {
+      id: '/analysts/'
+      path: '/analysts'
+      fullPath: '/analysts/'
+      preLoaderRoute: typeof AnalystsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analysts/$analystId': {
@@ -145,23 +264,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalystsAnalystIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/securities/$securityId': {
-      id: '/securities/$securityId'
+    '/scenarios/$scenarioId': {
+      id: '/scenarios/$scenarioId'
+      path: '/$scenarioId'
+      fullPath: '/scenarios/$scenarioId'
+      preLoaderRoute: typeof ScenariosScenarioIdRouteImport
+      parentRoute: typeof ScenariosRoute
+    }
+    '/sectors_/$sectorId': {
+      id: '/sectors_/$sectorId'
+      path: '/sectors/$sectorId'
+      fullPath: '/sectors/$sectorId'
+      preLoaderRoute: typeof SectorsSectorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/securities_/$securityId': {
+      id: '/securities_/$securityId'
       path: '/securities/$securityId'
       fullPath: '/securities/$securityId'
       preLoaderRoute: typeof SecuritiesSecurityIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analysts_/$analystId/ratings/$intervalId': {
+      id: '/analysts_/$analystId/ratings/$intervalId'
+      path: '/analysts/$analystId/ratings/$intervalId'
+      fullPath: '/analysts/$analystId/ratings/$intervalId'
+      preLoaderRoute: typeof AnalystsAnalystIdRatingsIntervalIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
+
+interface ScenariosRouteChildren {
+  ScenariosScenarioIdRoute: typeof ScenariosScenarioIdRoute
+}
+
+const ScenariosRouteChildren: ScenariosRouteChildren = {
+  ScenariosScenarioIdRoute: ScenariosScenarioIdRoute,
+}
+
+const ScenariosRouteWithChildren = ScenariosRoute._addFileChildren(
+  ScenariosRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChangesRoute: ChangesRoute,
   LeaderboardRoute: LeaderboardRoute,
+  MethodologiesRoute: MethodologiesRoute,
+  ScenariosRoute: ScenariosRouteWithChildren,
   SectorsRoute: SectorsRoute,
+  SecuritiesRoute: SecuritiesRoute,
   AnalystsAnalystIdRoute: AnalystsAnalystIdRoute,
+  SectorsSectorIdRoute: SectorsSectorIdRoute,
   SecuritiesSecurityIdRoute: SecuritiesSecurityIdRoute,
+  AnalystsIndexRoute: AnalystsIndexRoute,
+  AnalystsAnalystIdRatingsIntervalIdRoute:
+    AnalystsAnalystIdRatingsIntervalIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

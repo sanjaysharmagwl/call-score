@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { OverviewPage } from "../features/overview/OverviewPage";
 
 export const Route = createFileRoute("/")({
-  component: () => <h1 className="font-heading text-2xl font-semibold">Overview</h1>,
+  component: OverviewPage,
 });

@@ -1,26 +1,24 @@
-import { useQuery } from "@tanstack/react-query";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
-import { api } from "../api/client";
+import { RunSelector } from "../components/RunSelector";
+import { useHealth } from "../features/shared/queries";
+import { useActiveRun, useClearStaleRunQueries } from "../features/shared/run-state";
 
 const NAV: { num: string; label: string; to?: string }[] = [
   { num: "01", label: "Overview", to: "/" },
   { num: "02", label: "Leaderboard", to: "/leaderboard" },
-  { num: "03", label: "Analyst" },
-  { num: "04", label: "Security" },
+  { num: "03", label: "Analysts", to: "/analysts" },
+  { num: "04", label: "Securities", to: "/securities" },
   { num: "05", label: "Sectors", to: "/sectors" },
   { num: "06", label: "Change log", to: "/changes" },
 ];
 
+const LAB_NAV: { label: string; to: string }[] = [
+  { label: "Methodology", to: "/methodologies" },
+  { label: "Scenarios", to: "/scenarios" },
+];
+
 function HealthDot() {
-  const { data, isError } = useQuery({
-    queryKey: ["health"],
-    queryFn: async () => {
-      const { data, error } = await api.GET("/api/health");
-      if (error) throw error;
-      return data;
-    },
-    refetchInterval: 30_000,
-  });
+  const { data, isError } = useHealth();
   const ok = !isError && data?.status === "ok";
   return (
     <span
@@ -33,6 +31,9 @@ function HealthDot() {
 }
 
 function Shell() {
+  const { runId } = useActiveRun();
+  useClearStaleRunQueries(runId);
+
   return (
     <div className="flex min-h-screen min-w-[1320px] flex-col">
       <header className="flex h-[50px] items-center gap-3 border-b border-(--color-divider) px-4">
@@ -40,9 +41,12 @@ function Shell() {
         <span className="font-heading text-lg font-semibold tracking-[0.12em]">CALL SCORE</span>
         <span className="mx-2 h-5 w-px bg-(--color-divider)" />
         <span className="text-sm text-(--color-neutral-600)">Analyst rating performance</span>
-        <span className="ml-auto flex items-center gap-2 text-xs text-(--color-neutral-600)">
-          <HealthDot />
-          API
+        <span className="ml-auto flex items-center gap-4">
+          <RunSelector />
+          <span className="flex items-center gap-2 text-xs text-(--color-neutral-600)">
+            <HealthDot />
+            API
+          </span>
         </span>
       </header>
       <div className="flex flex-1">
@@ -64,6 +68,22 @@ function Shell() {
                 )}
               </li>
             ))}
+            <li className="mt-3 border-t border-(--color-divider) pt-2">
+              <div className="mb-1 text-xs text-(--color-neutral-500)">Lab</div>
+              <ul className="flex flex-col gap-1">
+                {LAB_NAV.map((item) => (
+                  <li key={item.to} className="flex items-baseline gap-2 text-sm">
+                    <Link
+                      to={item.to}
+                      className="text-(--color-text) hover:text-(--color-accent)"
+                      activeProps={{ className: "font-medium text-(--color-accent)" }}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
           </ul>
         </nav>
         <main className="flex-1 p-6">
@@ -74,4 +94,9 @@ function Shell() {
   );
 }
 
-export const Route = createRootRoute({ component: Shell });
+export const Route = createRootRoute({
+  validateSearch: (search: Record<string, unknown>) => ({
+    run_id: typeof search.run_id === "string" ? search.run_id : undefined,
+  }),
+  component: Shell,
+});

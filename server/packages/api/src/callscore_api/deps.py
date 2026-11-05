@@ -24,9 +24,15 @@ pooled); a fresh ``Session`` per request via :func:`get_session`; one
 never on the request/event-loop thread.
 """
 
+from __future__ import annotations
+
 import threading
 from collections.abc import AsyncIterator, Iterator
 from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from callscore_api.services.backtests import BacktestRunner
 
 from fastapi import FastAPI, Request
 from sqlalchemy import Engine
@@ -126,6 +132,30 @@ def get_stage_cache(request: Request) -> StageCache:
     return StageCache(get_settings(request).cache_dir)
 
 
+def get_backtest_runner(request: Request) -> BacktestRunner:
+    """Dependency: the app-wide ``BacktestRunner`` singleton.
+
+    Created lazily like :func:`get_job_coordinator`; only drains when the
+    app runs under :func:`lifespan` (or ``start()`` is called explicitly).
+    """
+    from callscore_api.services.backtests import BacktestRunner
+
+    runner = getattr(request.app.state, "backtest_runner", None)
+    if runner is None:
+        settings = get_settings(request)
+        engine = _ensure_engine(request.app, settings)
+        with _state_lock(request.app):
+            runner = getattr(request.app.state, "backtest_runner", None)
+            if runner is None:
+                runner = BacktestRunner(
+                    engine,
+                    lease_ttl=settings.job_lease_ttl_seconds,
+                    poll_interval=settings.job_poll_interval_seconds,
+                )
+                request.app.state.backtest_runner = runner
+    return runner
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI, settings: Settings | None = None) -> AsyncIterator[None]:
     """Application lifespan: settings -> bootstrapped engine -> running coordinator.
@@ -153,17 +183,28 @@ async def lifespan(app: FastAPI, settings: Settings | None = None) -> AsyncItera
         lease_ttl=resolved.job_lease_ttl_seconds,
         poll_interval=resolved.job_poll_interval_seconds,
     )
+    from callscore_api.services.backtests import BacktestRunner
+
+    backtest_runner = BacktestRunner(
+        engine,
+        lease_ttl=resolved.job_lease_ttl_seconds,
+        poll_interval=resolved.job_poll_interval_seconds,
+    )
     app.state.engine = engine
     app.state.job_coordinator = coordinator
+    app.state.backtest_runner = backtest_runner
     coordinator.start()
+    backtest_runner.start()
     try:
         yield
     finally:
+        backtest_runner.close()
         coordinator.close()
         engine.dispose()
 
 
 __all__ = [
+    "get_backtest_runner",
     "get_engine",
     "get_job_coordinator",
     "get_session",
