@@ -510,9 +510,11 @@ def test_portfolio_positions_columns_and_weights() -> None:
         "analyst_id",
         "session_date",
         "security_id",
-        "interval_id",
         "weight",
+        "notional",
     ]
+    # No NAV frame supplied -> notional stays null.
+    assert positions["notional"].null_count() == positions.height
     # D1: only S1 held -> weight 1. D7: only S1 -> weight 1.
     first = positions.filter(pl.col("session_date") == DATES[0])
     assert first.height == 1
@@ -520,6 +522,29 @@ def test_portfolio_positions_columns_and_weights() -> None:
     last = positions.filter(pl.col("session_date") == DATES[6])
     assert last["security_id"].to_list() == ["S1"]
     assert last["weight"].item() == pytest.approx(1.0)
+
+
+def test_portfolio_positions_notional_is_weight_times_nav() -> None:
+    intervals = _intervals([_interval("I1", "A1", "S1", 0)])
+    exposures = _exposures([_seg("I1", 1, 0, "open", 3, "close", 1.0)])
+    nav = _run(intervals, exposures)
+    positions = portfolio_positions(
+        intervals,
+        exposures,
+        SECURITY_DAILY,
+        _DELISTINGS,
+        _classifications(),
+        _sessions(),
+        _context(),
+        portfolio_nav=nav,
+    )
+    assert positions.height > 0
+    nav_map = {
+        (row["analyst_id"], row["session_date"]): row["nav"] for row in nav.iter_rows(named=True)
+    }
+    for row in positions.iter_rows(named=True):
+        expected = row["weight"] * nav_map[(row["analyst_id"], row["session_date"])]
+        assert row["notional"] == pytest.approx(expected)
 
 
 def test_empty_inputs_return_empty_frame() -> None:

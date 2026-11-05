@@ -24,10 +24,10 @@ from callscore_api.schemas.analysts import (
     AnalystProfileResponse,
     MetricDrilldownResponse,
     PortfolioResponse,
-    Provenance,
     RatingDetailResponse,
     RatingListResponse,
 )
+from callscore_api.schemas.common import Provenance
 from callscore_api.services import analyst_queries as aq
 from callscore_core.enums import RatingAction
 

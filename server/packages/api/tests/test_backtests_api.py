@@ -289,9 +289,32 @@ def test_failed_backtest_records_error(tmp_path: Path) -> None:
 def test_list_filter_and_404(tmp_path: Path) -> None:
     db_path = _make_db(tmp_path)
     client = _client(db_path, tmp_path / "cache")
-    _submit(client, {})
+    backtest_id = _submit(
+        client,
+        {"selection": "all", "start_date": "2025-01-06"},
+        end_date="2025-01-17",
+    )
     body = client.get("/api/backtests?status=queued").json()
     assert body["pagination"]["total"] == 1
+    row = body["data"][0]
+    # spec_summary is derived from stored config_json; key_stats null pre-run.
+    assert row["spec_summary"]["selection"] == "all"
+    assert row["spec_summary"]["mode"] == "long_only"
+    assert row["spec_summary"]["sizing"] == "equal"
+    assert row["spec_summary"]["rebalance"] == "event_driven"
+    assert row["spec_summary"]["start_date"] == "2025-01-06"
+    assert row["spec_summary"]["end_date"] == "2025-01-17"
+    assert row["key_stats"] is None
+
+    _run(db_path, backtest_id)
+    body = client.get("/api/backtests?status=succeeded").json()
+    row = body["data"][0]
+    assert row["key_stats"] is not None
+    assert row["key_stats"]["n_sessions"] == len(SESSION_DAYS)
+    assert row["key_stats"]["annualized_return"] is not None
+    assert row["key_stats"]["max_drawdown"] is not None
+    assert "sharpe" in row["key_stats"]
+
     assert client.get("/api/backtests?status=bogus").status_code == 422
     assert client.get("/api/backtests/nope").status_code == 404
     assert client.get("/api/backtests/nope/nav").status_code == 404

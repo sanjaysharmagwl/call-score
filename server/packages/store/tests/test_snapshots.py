@@ -190,6 +190,7 @@ def _contract_check(snap: Snapshot) -> None:
         "target_outcomes",
         "coverage_daily",
         "portfolio_nav",
+        "portfolio_positions",
         "metric_samples",
         "metric_results",
         "composites",

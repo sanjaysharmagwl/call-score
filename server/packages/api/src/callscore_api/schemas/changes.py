@@ -1,14 +1,11 @@
-"""Response models for GET /api/changes (audit/change log).
-
-NOTE (merge): shares ``Pagination`` with ``schemas.securities``; expected to
-converge on ``callscore_api.schemas.common`` once T13's foundation lands.
-"""
+"""Response models for GET /api/changes (audit/change log)."""
 
 from datetime import datetime
 
 from pydantic import BaseModel
 
-from callscore_api.schemas.securities import Pagination, Provenance
+from callscore_api.schemas.common import PaginationMeta
+from callscore_api.schemas.securities import SourceProvenance
 
 
 class ChangeItem(BaseModel):
@@ -40,5 +37,5 @@ class ChangeItem(BaseModel):
 
 class ChangesResponse(BaseModel):
     data: list[ChangeItem]
-    pagination: Pagination
-    provenance: Provenance | None = None
+    pagination: PaginationMeta
+    provenance: SourceProvenance | None = None

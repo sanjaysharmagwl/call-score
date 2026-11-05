@@ -373,6 +373,28 @@ def test_changes_window_and_run_scope(client: TestClient) -> None:
     assert client.get("/api/changes", params={"run_id": "nope"}).status_code == 404
 
 
+def test_changes_run_created_uses_created_at_for_queued_run(
+    client: TestClient, engine: Engine
+) -> None:
+    """A queued-never-run calc_run still emits ``run_created``: the row is
+    stamped with ``created_at`` (insert time), not ``started_at`` (NULL)."""
+    calculation.prepare_run(
+        engine,
+        Methodology(),
+        run_id="run-queued",
+        as_of_date=AS_OF,
+        knowledge_cutoff=calculation.default_knowledge_cutoff(AS_OF),
+    )
+    body = client.get("/api/changes", params={"type": "run_created"}).json()
+    run_rows = {c["run_id"]: c for c in body["data"] if c["kind"] == "run"}
+    assert "run-queued" in run_rows
+    queued = run_rows["run-queued"]
+    assert queued["type"] == "run_created"
+    assert queued["ts"] is not None
+    # run-1 ran, so its run_created is also present.
+    assert RUN_ID in run_rows
+
+
 def test_changes_csv(client: TestClient) -> None:
     resp = client.get("/api/changes", params={"format": "csv"})
     assert resp.headers["content-type"].startswith("text/csv")

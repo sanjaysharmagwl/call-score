@@ -133,6 +133,7 @@ def execute_run(
             "metric_results": result.metric_results,
             "composites": result.composites,
             "portfolio_nav": result.portfolio_nav,
+            "portfolio_positions": result.portfolio_positions,
         }
         counts = derived.publish_run_results(
             ctx,

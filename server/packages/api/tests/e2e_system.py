@@ -55,6 +55,7 @@ _DERIVED_TABLES = (
     "target_outcome",
     "event_window",
     "portfolio_nav",
+    "portfolio_position",
 )
 
 

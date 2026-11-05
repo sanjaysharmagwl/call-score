@@ -43,7 +43,7 @@ def list_sectors(
         return mq.csv_response(mq.rows_to_csv(page, fields), "sectors.csv")
     return SectorListResponse(
         data=page,
-        pagination={"limit": limit, "offset": offset, "total": total},
+        pagination={"limit": limit, "offset": offset, "count": len(page), "total": total},
         provenance=mq.provenance(engine),
     )
 

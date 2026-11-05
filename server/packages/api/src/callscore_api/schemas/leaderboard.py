@@ -2,7 +2,8 @@
 
 from pydantic import BaseModel, Field
 
-from callscore_api.schemas.analysts import FamilyScores, InlineMetric, Provenance
+from callscore_api.schemas.analysts import FamilyScores, InlineMetric
+from callscore_api.schemas.common import Provenance
 
 
 class LeaderboardRow(BaseModel):

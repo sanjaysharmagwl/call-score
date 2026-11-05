@@ -10,14 +10,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-
-class Provenance(BaseModel):
-    """Which run/methodology produced the payload."""
-
-    run_id: str
-    methodology_fingerprint: str
-    as_of_date: date
-    run_status: str
+from callscore_api.schemas.common import Provenance
 
 
 class PageMeta(BaseModel):

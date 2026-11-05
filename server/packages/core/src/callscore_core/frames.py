@@ -391,6 +391,23 @@ PORTFOLIO_NAV_FRAME = _frame(
     ("analyst_id", "session_date"),
 )
 
+# ``portfolio_positions`` mirrors the ``portfolio_position`` table columns
+# (minus ``run_id``): one row per (analyst, session, security) — the weight is
+# already aggregated across all active exposure segments of that security, so
+# no ``interval_id`` is emitted. ``notional`` is ``weight * nav`` of the same
+# session (null when no NAV frame was supplied to the engine stage).
+PORTFOLIO_POSITIONS_FRAME = _frame(
+    "portfolio_positions",
+    (
+        ("analyst_id", "String"),
+        ("session_date", "Date"),
+        ("security_id", "String"),
+        ("weight", "Float64"),
+        ("notional", "Float64", True),
+    ),
+    ("analyst_id", "session_date", "security_id"),
+)
+
 METRIC_SAMPLE_FRAME = _frame(
     "metric_samples",
     (
@@ -457,6 +474,7 @@ FRAME_CONTRACTS: dict[str, FrameContract] = {
         TARGET_OUTCOME_FRAME,
         COVERAGE_DAILY_FRAME,
         PORTFOLIO_NAV_FRAME,
+        PORTFOLIO_POSITIONS_FRAME,
         METRIC_SAMPLE_FRAME,
         METRIC_RESULT_FRAME,
         COMPOSITE_FRAME,

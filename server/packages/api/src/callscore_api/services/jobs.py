@@ -60,7 +60,7 @@ from callscore_engine.metrics import MetricInputs, compute_metrics
 from callscore_engine.metrics._base import contract_schema
 from callscore_engine.peers import assign_peer_groups
 from callscore_engine.point_in_time import visible_events
-from callscore_engine.portfolio import simulate_portfolios
+from callscore_engine.portfolio import portfolio_positions, simulate_portfolios
 from callscore_engine.returns import build_returns
 from callscore_engine.runner import (
     INPUT_FRAME_NAMES,
@@ -92,7 +92,7 @@ STAGE_OUTPUTS: dict[Stage, tuple[str, ...]] = {
     Stage.INTERVALS: ("intervals", "target_outcomes", "coverage_daily"),
     Stage.RETURNS: ("returns",),
     Stage.EXPOSURES: ("exposures", "contributions", "event_windows"),
-    Stage.METRICS: ("portfolio_nav", "metric_values", "metric_samples"),
+    Stage.METRICS: ("portfolio_nav", "portfolio_positions", "metric_values", "metric_samples"),
     Stage.STATISTICS: ("metric_results", "composites"),
 }
 
@@ -107,6 +107,7 @@ _OUTPUT_ORDER: tuple[str, ...] = (
     "target_outcomes",
     "coverage_daily",
     "portfolio_nav",
+    "portfolio_positions",
     "metric_values",
     "metric_samples",
     "metric_results",
@@ -177,10 +178,10 @@ def _jsonable(value: Any) -> Any:
 
 
 def _content_fingerprint(frame: pl.DataFrame, frame_name: str, sort_by: tuple[str, ...]) -> str:
+    """Same digest as ``runner._content_fingerprint`` (Polars row hashing)."""
     sorted_frame = frame.sort(list(sort_by)) if sort_by else frame
-    rows = [{k: _jsonable(v) for k, v in record.items()} for record in sorted_frame.to_dicts()]
-    payload = {"frame": frame_name, "rows": rows}
-    return hashlib.sha256(canonical_dumps(payload).encode()).hexdigest()
+    row_hashes = sorted_frame.hash_rows().to_numpy().tobytes()
+    return hashlib.sha256(frame_name.encode() + b"\x00" + row_hashes).hexdigest()
 
 
 def _sort_keys(frame_name: str) -> tuple[str, ...]:
@@ -296,6 +297,16 @@ def _compute_stage(
             methodology,
             context,
         )
+        out["portfolio_positions"] = portfolio_positions(
+            out["intervals"],
+            out["exposures"],
+            data["security_daily"],
+            data["delistings"],
+            data["security_classifications"],
+            data["sessions"],
+            context,
+            portfolio_nav=out["portfolio_nav"],
+        )
         metric_inputs = MetricInputs(
             contributions=out["contributions"],
             event_windows=out["event_windows"],
@@ -399,6 +410,7 @@ def run_pipeline_cached(
         target_outcomes=out["target_outcomes"],
         coverage_daily=out["coverage_daily"],
         portfolio_nav=out["portfolio_nav"],
+        portfolio_positions=out["portfolio_positions"],
         metric_values=out["metric_values"],
         metric_samples=out["metric_samples"],
         metric_results=out["metric_results"],
@@ -704,6 +716,7 @@ def execute_run_cached(
             "metric_results": result.metric_results,
             "composites": result.composites,
             "portfolio_nav": result.portfolio_nav,
+            "portfolio_positions": result.portfolio_positions,
         }
         counts = derived.publish_run_results(
             ctx,

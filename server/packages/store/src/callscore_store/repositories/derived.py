@@ -43,6 +43,7 @@ STAGE_TABLES: dict[str, type] = {
     "metric_results": AnalystMetric,
     "composites": AnalystComposite,
     "portfolio_nav": PortfolioNav,
+    "portfolio_positions": PortfolioPosition,
 }
 
 # Delete children before parents (FKs are immediate in SQLite).

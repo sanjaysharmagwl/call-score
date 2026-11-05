@@ -363,7 +363,7 @@ def test_pit_classification_at_past_as_of(client: TestClient) -> None:
 
 def test_pagination_bounds(client: TestClient) -> None:
     body = client.get("/api/securities", params={"limit": 1, "offset": 1}).json()
-    assert body["pagination"] == {"limit": 1, "offset": 1, "total": 2}
+    assert body["pagination"] == {"limit": 1, "offset": 1, "count": 1, "total": 2}
     assert len(body["data"]) == 1
     assert client.get("/api/securities", params={"limit": 501}).status_code == 422
     assert client.get("/api/securities", params={"offset": -1}).status_code == 422

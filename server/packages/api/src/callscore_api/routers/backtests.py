@@ -30,7 +30,6 @@ from callscore_api.schemas.backtests import (
     BacktestAttributionRow,
     BacktestCreateRequest,
     BacktestDetail,
-    BacktestErrorInfo,
     BacktestListResponse,
     BacktestMonthlyResponse,
     BacktestMonthlyRow,
@@ -66,18 +65,12 @@ _TRADE_FIELDS = (
 )
 
 
-def _summary(row: dict[str, Any]) -> BacktestSummary:
-    error = row.get("error")
-    return BacktestSummary(
-        backtest_id=str(row["backtest_id"]),
-        name=row.get("name"),
-        status=str(row["status"]),
-        created_at=row.get("created_at"),
-        started_at=row.get("started_at"),
-        finished_at=row.get("finished_at"),
-        benchmark_id=row.get("benchmark_id"),
-        error=BacktestErrorInfo(**error) if isinstance(error, dict) else None,
-    )
+def _summary(
+    row: dict[str, Any],
+    *,
+    key_stats: dict[str, float | None] | None = None,
+) -> BacktestSummary:
+    return BacktestSummary(**svc.list_row_summary(row), key_stats=key_stats)
 
 
 def _detail(row: dict[str, Any]) -> BacktestDetail:
@@ -116,8 +109,12 @@ def list_backtests(
         limit=pagination.limit,
         offset=pagination.offset,
     )
+    succeeded_ids = [
+        str(r["backtest_id"]) for r in rows if str(r["status"]) == RunStatus.SUCCEEDED.value
+    ]
+    stats_by_id = svc.backtest_key_stats(engine, succeeded_ids)
     return BacktestListResponse(
-        data=[_summary(r) for r in rows],
+        data=[_summary(r, key_stats=stats_by_id.get(str(r["backtest_id"]))) for r in rows],
         pagination=PaginationMeta(
             limit=pagination.limit,
             offset=pagination.offset,

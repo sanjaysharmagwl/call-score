@@ -193,6 +193,7 @@ _OUTPUT_NAMES = (
     "target_outcomes",
     "coverage_daily",
     "portfolio_nav",
+    "portfolio_positions",
     "metric_values",
     "metric_samples",
     "metric_results",

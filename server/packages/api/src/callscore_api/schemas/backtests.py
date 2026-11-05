@@ -42,6 +42,31 @@ class BacktestErrorInfo(BaseModel):
     message: str
 
 
+class BacktestSpecSummary(BaseModel):
+    """Compact digest of the stored ``BacktestSpec`` for list rows.
+
+    Derived from ``config_json`` only (no engine calls); fields absent from
+    the stored config are ``None``.
+    """
+
+    selection: str | None = None
+    mode: str | None = None
+    sizing: str | None = None
+    rebalance: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+
+
+class BacktestKeyStats(BaseModel):
+    """Headline stats for succeeded backtests (``null`` until then)."""
+
+    annualized_return: float | None = None
+    sharpe: float | None = None
+    """Mapped from the stored ``sharpe_ratio`` stat code."""
+    max_drawdown: float | None = None
+    n_sessions: float | None = None
+
+
 class BacktestSummary(BaseModel):
     """List-row view of a ``backtest``."""
 
@@ -53,6 +78,8 @@ class BacktestSummary(BaseModel):
     finished_at: datetime | None = None
     benchmark_id: str | None = None
     error: BacktestErrorInfo | None = None
+    spec_summary: BacktestSpecSummary | None = None
+    key_stats: BacktestKeyStats | None = None
 
 
 class BacktestDetail(BacktestSummary):
@@ -146,11 +173,13 @@ __all__ = [
     "BacktestCreateRequest",
     "BacktestDetail",
     "BacktestErrorInfo",
+    "BacktestKeyStats",
     "BacktestListResponse",
     "BacktestMonthlyResponse",
     "BacktestMonthlyRow",
     "BacktestNavResponse",
     "BacktestNavRow",
+    "BacktestSpecSummary",
     "BacktestStatRow",
     "BacktestStatsResponse",
     "BacktestSubmitResponse",

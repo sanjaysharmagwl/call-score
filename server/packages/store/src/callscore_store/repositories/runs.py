@@ -101,6 +101,7 @@ def create_calc_run(
         "universe_filter_json": universe_filter_json,
         "status": _status_value(status).value,
         "progress": 0.0,
+        "created_at": datetime.now(UTC),
         "algorithm_version": algorithm_version,
         "source_fingerprint": source_fingerprint,
     }

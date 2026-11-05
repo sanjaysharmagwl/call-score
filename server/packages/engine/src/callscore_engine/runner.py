@@ -23,7 +23,7 @@ import polars as pl
 from callscore_core.contracts import STAGE_ORDER, RunContext, StageArtifact, stage_fingerprint
 from callscore_core.enums import Stage
 from callscore_core.frames import FRAME_CONTRACTS, FrameContract
-from callscore_core.methodology import Methodology, canonical_dumps
+from callscore_core.methodology import Methodology
 from callscore_engine.composite import compute_composites
 from callscore_engine.contributions import build_contributions
 from callscore_engine.coverage import build_coverage_daily
@@ -34,7 +34,7 @@ from callscore_engine.metrics import MetricInputs, compute_metrics
 from callscore_engine.metrics._base import contract_schema
 from callscore_engine.peers import assign_peer_groups
 from callscore_engine.point_in_time import visible_events
-from callscore_engine.portfolio import simulate_portfolios
+from callscore_engine.portfolio import portfolio_positions, simulate_portfolios
 from callscore_engine.returns import build_returns
 from callscore_engine.stats import infer_metrics
 from callscore_engine.targets import build_target_outcomes
@@ -97,6 +97,7 @@ class PipelineResult:
     target_outcomes: pl.DataFrame
     coverage_daily: pl.DataFrame
     portfolio_nav: pl.DataFrame
+    portfolio_positions: pl.DataFrame
     metric_values: pl.DataFrame
     metric_samples: pl.DataFrame
     metric_results: pl.DataFrame
@@ -142,11 +143,16 @@ def _jsonable(value: Any) -> Any:
 
 
 def _content_fingerprint(frame: pl.DataFrame, frame_name: str, sort_by: tuple[str, ...]) -> str:
-    """Canonical digest of a frame sorted by ``sort_by`` (contract sort keys)."""
+    """Canonical digest of a frame sorted by ``sort_by`` (contract sort keys).
+
+    Uses Polars' native row hashing (Rust) instead of per-row JSON
+    canonicalization — orders of magnitude faster on multi-million-row
+    frames (``metric_samples``, ``coverage_daily``). Deterministic for a
+    given frame + sort order on a given platform.
+    """
     sorted_frame = frame.sort(list(sort_by)) if sort_by else frame
-    rows = [{k: _jsonable(v) for k, v in record.items()} for record in sorted_frame.to_dicts()]
-    payload = {"frame": frame_name, "rows": rows}
-    return hashlib.sha256(canonical_dumps(payload).encode()).hexdigest()
+    row_hashes = sorted_frame.hash_rows().to_numpy().tobytes()
+    return hashlib.sha256(frame_name.encode() + b"\x00" + row_hashes).hexdigest()
 
 
 def assert_frame_contract(frame: pl.DataFrame, contract: FrameContract) -> None:
@@ -184,9 +190,13 @@ def assert_frame_contract(frame: pl.DataFrame, contract: FrameContract) -> None:
 #     (position weights, scoring mode, consensus; upstream covers returns legs
 #      and interval boundaries, which contributions/event windows also read)
 #   returns                                  -> RETURNS
-#   portfolio_nav/metric_values/metric_samples -> METRICS
+#   portfolio_nav/portfolio_positions/metric_values/metric_samples -> METRICS
 #     (transaction_cost_bps, primary_fixed_horizon_days; upstream covers all
-#      inputs including exposures and returns)
+#      inputs including exposures and returns. Positions share the NAV
+#      simulation's weight timeline and need its ``nav`` for ``notional``, so
+#      they are grouped with the metrics stage; positions themselves read no
+#      METRICS methodology field, so the only extra invalidation is
+#      transaction_cost_bps/primary_fixed_horizon_days changes)
 #   metric_results/composites                -> STATISTICS
 #     (shrinkage, peer groups, bootstrap, family weights; upstream covers the
 #      metric stage whose catalog fingerprint gates inference inputs)
@@ -199,6 +209,7 @@ _FRAME_STAGE: dict[str, Stage] = {
     "event_windows": Stage.EXPOSURES,
     "returns": Stage.RETURNS,
     "portfolio_nav": Stage.METRICS,
+    "portfolio_positions": Stage.METRICS,
     "metric_values": Stage.METRICS,
     "metric_samples": Stage.METRICS,
     "metric_results": Stage.STATISTICS,
@@ -239,8 +250,8 @@ def run_pipeline(
     Stage order::
 
         intervals -> exposures -> returns -> contributions -> event_windows
-        -> target_outcomes -> coverage_daily -> metric values+samples
-        -> portfolio_nav -> metric_results -> composites
+        -> target_outcomes -> coverage_daily -> portfolio_nav + positions
+        -> metric values+samples -> metric_results -> composites
 
     Every contract-frame output is validated against ``FRAME_CONTRACTS``;
     a violation raises ``ValueError``.
@@ -316,6 +327,16 @@ def run_pipeline(
         methodology,
         context,
     )
+    positions = portfolio_positions(
+        intervals,
+        exposures,
+        security_daily,
+        delistings,
+        classifications,
+        sessions,
+        context,
+        portfolio_nav=portfolio_nav,
+    )
 
     peer_groups = assign_peer_groups(
         coverage_spells, classifications, context.as_of_date, methodology.peer_group_dims
@@ -359,6 +380,7 @@ def run_pipeline(
         "target_outcomes": target_outcomes,
         "coverage_daily": coverage_daily,
         "portfolio_nav": portfolio_nav,
+        "portfolio_positions": positions,
         "metric_values": metric_outputs.values,
         "metric_samples": metric_outputs.samples,
         "metric_results": metric_results,
@@ -398,6 +420,7 @@ def run_pipeline(
         target_outcomes=target_outcomes,
         coverage_daily=coverage_daily,
         portfolio_nav=portfolio_nav,
+        portfolio_positions=positions,
         metric_values=metric_outputs.values,
         metric_samples=metric_outputs.samples,
         metric_results=metric_results,

@@ -63,6 +63,7 @@ def test_empty_inputs_produce_contract_outputs() -> None:
         "target_outcomes",
         "coverage_daily",
         "portfolio_nav",
+        "portfolio_positions",
         "metric_samples",
         "metric_results",
         "composites",
@@ -110,7 +111,7 @@ def test_methodology_change_invalidates_owning_stage() -> None:
 
 def test_stage_artifacts_reference_stage_fingerprints() -> None:
     result = _run()
-    assert len(result.stage_artifacts) == 12
+    assert len(result.stage_artifacts) == 13
     assert all(isinstance(a, StageArtifact) for a in result.stage_artifacts)
     by_stage = {a.stage for a in result.stage_artifacts}
     assert by_stage == set(Stage)

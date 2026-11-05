@@ -1087,7 +1087,7 @@ export interface components {
             limit: number;
             /** Offset */
             offset: number;
-            provenance: components["schemas"]["callscore_api__schemas__analysts__Provenance"];
+            provenance: components["schemas"]["Provenance"];
         };
         /** AnalystProfileResponse */
         AnalystProfileResponse: {
@@ -1108,7 +1108,7 @@ export interface components {
             composite?: components["schemas"]["CompositeBlock"] | null;
             /** Metrics */
             metrics: components["schemas"]["MetricDetail"][];
-            provenance: components["schemas"]["callscore_api__schemas__analysts__Provenance"];
+            provenance: components["schemas"]["Provenance"];
         };
         /** AnalystsOverview */
         AnalystsOverview: {
@@ -1192,6 +1192,8 @@ export interface components {
             /** Benchmark Id */
             benchmark_id?: string | null;
             error?: components["schemas"]["BacktestErrorInfo"] | null;
+            spec_summary?: components["schemas"]["BacktestSpecSummary"] | null;
+            key_stats?: components["schemas"]["BacktestKeyStats"] | null;
             /** Spec */
             spec?: {
                 [key: string]: unknown;
@@ -1214,6 +1216,20 @@ export interface components {
             type: string;
             /** Message */
             message: string;
+        };
+        /**
+         * BacktestKeyStats
+         * @description Headline stats for succeeded backtests (``null`` until then).
+         */
+        BacktestKeyStats: {
+            /** Annualized Return */
+            annualized_return?: number | null;
+            /** Sharpe */
+            sharpe?: number | null;
+            /** Max Drawdown */
+            max_drawdown?: number | null;
+            /** N Sessions */
+            n_sessions?: number | null;
         };
         /** BacktestListResponse */
         BacktestListResponse: {
@@ -1272,6 +1288,27 @@ export interface components {
             /** Drawdown */
             drawdown: number;
         };
+        /**
+         * BacktestSpecSummary
+         * @description Compact digest of the stored ``BacktestSpec`` for list rows.
+         *
+         *     Derived from ``config_json`` only (no engine calls); fields absent from
+         *     the stored config are ``None``.
+         */
+        BacktestSpecSummary: {
+            /** Selection */
+            selection?: string | null;
+            /** Mode */
+            mode?: string | null;
+            /** Sizing */
+            sizing?: string | null;
+            /** Rebalance */
+            rebalance?: string | null;
+            /** Start Date */
+            start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
+        };
         /** BacktestStatRow */
         BacktestStatRow: {
             /** Stat Code */
@@ -1322,6 +1359,8 @@ export interface components {
             /** Benchmark Id */
             benchmark_id?: string | null;
             error?: components["schemas"]["BacktestErrorInfo"] | null;
+            spec_summary?: components["schemas"]["BacktestSpecSummary"] | null;
+            key_stats?: components["schemas"]["BacktestKeyStats"] | null;
         };
         /** BacktestTradeRow */
         BacktestTradeRow: {
@@ -1568,8 +1607,8 @@ export interface components {
         ChangesResponse: {
             /** Data */
             data: components["schemas"]["ChangeItem"][];
-            pagination: components["schemas"]["Pagination"];
-            provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+            pagination: components["schemas"]["PaginationMeta"];
+            provenance?: components["schemas"]["SourceProvenance"] | null;
         };
         /** ClassificationSpell */
         ClassificationSpell: {
@@ -1693,7 +1732,7 @@ export interface components {
              * @default []
              */
             target_outcomes: components["schemas"]["TargetOutcomeItem"][];
-            provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+            provenance?: components["schemas"]["SourceProvenance"] | null;
         };
         /** DataCoverage */
         DataCoverage: {
@@ -1984,7 +2023,7 @@ export interface components {
             limit: number;
             /** Offset */
             offset: number;
-            provenance: components["schemas"]["callscore_api__schemas__analysts__Provenance"];
+            provenance: components["schemas"]["Provenance"];
         };
         /** LeaderboardRow */
         LeaderboardRow: {
@@ -2365,7 +2404,7 @@ export interface components {
             analyst_id: string;
             /** Items */
             items: components["schemas"]["MetricDetail"][];
-            provenance: components["schemas"]["callscore_api__schemas__analysts__Provenance"];
+            provenance: components["schemas"]["Provenance"];
         };
         /**
          * MetricFamily
@@ -2396,7 +2435,7 @@ export interface components {
         };
         /** OverviewResponse */
         OverviewResponse: {
-            run?: components["schemas"]["RunProvenanceBlock"] | null;
+            run?: components["schemas"]["Provenance"] | null;
             analysts: components["schemas"]["AnalystsOverview"];
             /**
              * Run Counts By Status
@@ -2406,19 +2445,7 @@ export interface components {
                 [key: string]: number;
             };
             data_coverage: components["schemas"]["DataCoverage"];
-            provenance: components["schemas"]["callscore_api__schemas__securities__Provenance"];
-        };
-        /**
-         * Pagination
-         * @description Offset-pagination block shared by list endpoints (max limit 500).
-         */
-        Pagination: {
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-            /** Total */
-            total: number;
+            provenance: components["schemas"]["SourceProvenance"];
         };
         /**
          * PaginationMeta
@@ -2453,7 +2480,7 @@ export interface components {
              */
             downsampled: boolean;
             positions: components["schemas"]["PositionsSnapshot"];
-            provenance: components["schemas"]["callscore_api__schemas__analysts__Provenance"];
+            provenance: components["schemas"]["Provenance"];
         };
         /** PositionWeights */
         PositionWeights: {
@@ -2560,7 +2587,48 @@ export interface components {
              * @default 0
              */
             source_rows: number;
-            provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+            provenance?: components["schemas"]["SourceProvenance"] | null;
+        };
+        /**
+         * Provenance
+         * @description Optional input-provenance block for detail/compare responses.
+         *
+         *     Single shared shape covering both producers:
+         *
+         *     * run-scoped payloads (analyst/leaderboard endpoints emit
+         *       ``run_id``/``methodology_fingerprint``/``as_of_date``/``run_status``;
+         *       market-data run blocks emit ``status`` plus the extra run columns
+         *       ``knowledge_cutoff``/``methodology_version_id``/``source_fingerprint``/
+         *       ``algorithm_version``/``started_at``/``finished_at``), and
+         *     * ``Envelope.provenance``, which may carry ``source_revision``.
+         *
+         *     Fields that do not apply to a given producer are simply ``None``.
+         */
+        Provenance: {
+            /** Run Id */
+            run_id?: string | null;
+            /** Methodology Fingerprint */
+            methodology_fingerprint?: string | null;
+            /** As Of Date */
+            as_of_date?: string | null;
+            /** Knowledge Cutoff */
+            knowledge_cutoff?: string | null;
+            /** Source Revision */
+            source_revision?: string | null;
+            /** Run Status */
+            run_status?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Methodology Version Id */
+            methodology_version_id?: number | null;
+            /** Source Fingerprint */
+            source_fingerprint?: string | null;
+            /** Algorithm Version */
+            algorithm_version?: string | null;
+            /** Started At */
+            started_at?: string | null;
+            /** Finished At */
+            finished_at?: string | null;
         };
         /**
          * RankCorrelation
@@ -2662,7 +2730,7 @@ export interface components {
             } | null;
             /** Explanation */
             explanation: string;
-            provenance: components["schemas"]["callscore_api__schemas__analysts__Provenance"];
+            provenance: components["schemas"]["Provenance"];
         };
         /** RatingEventItem */
         RatingEventItem: {
@@ -2801,7 +2869,7 @@ export interface components {
             limit: number;
             /** Offset */
             offset: number;
-            provenance: components["schemas"]["callscore_api__schemas__analysts__Provenance"];
+            provenance: components["schemas"]["Provenance"];
         };
         /** RatingsResponse */
         RatingsResponse: {
@@ -2811,7 +2879,7 @@ export interface components {
             run_id?: string | null;
             /** Data */
             data: components["schemas"]["RatingEventItem"][];
-            pagination: components["schemas"]["Pagination"];
+            pagination: components["schemas"]["PaginationMeta"];
         };
         /** ReadinessCheck */
         ReadinessCheck: {
@@ -2968,29 +3036,6 @@ export interface components {
             /** Data */
             data: components["schemas"]["RunSummary"][];
             pagination: components["schemas"]["PaginationMeta"];
-        };
-        /** RunProvenanceBlock */
-        RunProvenanceBlock: {
-            /** Run Id */
-            run_id?: string | null;
-            /** Status */
-            status?: string | null;
-            /** As Of Date */
-            as_of_date?: string | null;
-            /** Knowledge Cutoff */
-            knowledge_cutoff?: string | null;
-            /** Methodology Version Id */
-            methodology_version_id?: number | null;
-            /** Methodology Fingerprint */
-            methodology_fingerprint?: string | null;
-            /** Source Fingerprint */
-            source_fingerprint?: string | null;
-            /** Algorithm Version */
-            algorithm_version?: string | null;
-            /** Started At */
-            started_at?: string | null;
-            /** Finished At */
-            finished_at?: string | null;
         };
         /**
          * RunStatus
@@ -3300,8 +3345,8 @@ export interface components {
         SectorListResponse: {
             /** Data */
             data: components["schemas"]["SectorItem"][];
-            pagination: components["schemas"]["Pagination"];
-            provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+            pagination: components["schemas"]["PaginationMeta"];
+            provenance?: components["schemas"]["SourceProvenance"] | null;
         };
         /** SectorPerformanceResponse */
         SectorPerformanceResponse: {
@@ -3311,7 +3356,7 @@ export interface components {
             sector_name: string;
             /** Parent Sector Id */
             parent_sector_id?: string | null;
-            run: components["schemas"]["RunProvenanceBlock"];
+            run: components["schemas"]["Provenance"];
             /** N Securities */
             n_securities: number;
             /** N Delisted */
@@ -3329,7 +3374,7 @@ export interface components {
              * @default []
              */
             composite_score_distribution: components["schemas"]["ScoreBucket"][];
-            provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+            provenance?: components["schemas"]["SourceProvenance"] | null;
         };
         /** SecurityDetailResponse */
         SecurityDetailResponse: {
@@ -3367,7 +3412,7 @@ export interface components {
              * @default 0
              */
             rating_event_count: number;
-            provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+            provenance?: components["schemas"]["SourceProvenance"] | null;
         };
         /** SecurityListItem */
         SecurityListItem: {
@@ -3405,14 +3450,14 @@ export interface components {
         SecurityListResponse: {
             /** Data */
             data: components["schemas"]["SecurityListItem"][];
-            pagination: components["schemas"]["Pagination"];
-            provenance?: components["schemas"]["callscore_api__schemas__securities__Provenance"] | null;
+            pagination: components["schemas"]["PaginationMeta"];
+            provenance?: components["schemas"]["SourceProvenance"] | null;
         };
         /** SecurityPerformanceResponse */
         SecurityPerformanceResponse: {
             /** Security Id */
             security_id: string;
-            run: components["schemas"]["RunProvenanceBlock"];
+            run: components["schemas"]["Provenance"];
             /**
              * N Ratings
              * @default 0
@@ -3515,6 +3560,18 @@ export interface components {
          * @enum {string}
          */
         ShrinkageMethod: "none" | "empirical_bayes";
+        /**
+         * SourceProvenance
+         * @description Source-data provenance (distinct from calculation ``run_id``).
+         */
+        SourceProvenance: {
+            /**
+             * Source Revisions
+             * @default []
+             */
+            source_revisions: components["schemas"]["SourceRevisionInfo"][];
+            generation_manifest?: components["schemas"]["GenerationManifestInfo"] | null;
+        };
         /** SourceRevisionInfo */
         SourceRevisionInfo: {
             /** Source Id */
@@ -3641,35 +3698,6 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
-        };
-        /**
-         * Provenance
-         * @description Which run/methodology produced the payload.
-         */
-        callscore_api__schemas__analysts__Provenance: {
-            /** Run Id */
-            run_id: string;
-            /** Methodology Fingerprint */
-            methodology_fingerprint: string;
-            /**
-             * As Of Date
-             * Format: date
-             */
-            as_of_date: string;
-            /** Run Status */
-            run_status: string;
-        };
-        /**
-         * Provenance
-         * @description Source-data provenance (distinct from calculation ``run_id``).
-         */
-        callscore_api__schemas__securities__Provenance: {
-            /**
-             * Source Revisions
-             * @default []
-             */
-            source_revisions: components["schemas"]["SourceRevisionInfo"][];
-            generation_manifest?: components["schemas"]["GenerationManifestInfo"] | null;
         };
     };
     responses: never;

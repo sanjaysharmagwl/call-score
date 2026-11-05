@@ -1420,8 +1420,9 @@ def list_changes(
 
     ``run_id`` scopes BOTH sources: rating events must have produced an
     interval in that run, and only that run's lifecycle rows are returned.
-    ``calc_run`` has no ``created_at`` column, so ``run_created`` is stamped
-    with ``started_at`` (documented approximation — see handoff).
+    ``run_created`` is stamped with ``calc_run.created_at`` (schema v3); rows
+    migrated from v2 may have NULL ``created_at``, so ``started_at`` is the
+    fallback.
     """
     change_type = _validate_change_type(change_type)
     if run_id is not None:
@@ -1502,7 +1503,9 @@ def list_changes(
         for r in all_runs:
             rid = str(r["run_id"])
             status = str(r["status"])
-            candidates: list[tuple[str, Any]] = [("run_created", r["started_at"])]
+            candidates: list[tuple[str, Any]] = [
+                ("run_created", r.get("created_at") or r["started_at"])
+            ]
             if status == RunStatus.SUCCEEDED.value:
                 candidates.append(("run_succeeded", r["finished_at"]))
             elif status == RunStatus.FAILED.value:

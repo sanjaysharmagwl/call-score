@@ -72,6 +72,6 @@ def list_changes(
         return mq.csv_response(mq.rows_to_csv(rows, fields), "changes.csv")
     return ChangesResponse(
         data=rows,
-        pagination={"limit": limit, "offset": offset, "total": total},
+        pagination={"limit": limit, "offset": offset, "count": len(rows), "total": total},
         provenance=mq.provenance(engine),
     )

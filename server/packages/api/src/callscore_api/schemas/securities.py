@@ -1,21 +1,15 @@
 """Response models for the securities endpoints.
 
-NOTE (merge): ``Pagination``/``Provenance`` duplicates are expected to move to
-``callscore_api.schemas.common`` once T13's foundation lands — they are defined
-here only because that module does not exist yet.
+Pagination reuses ``callscore_api.schemas.common.PaginationMeta``; run
+provenance reuses ``common.Provenance``. ``SourceProvenance`` is distinct: it
+describes *source-data* revisions/manifests, not calculation runs.
 """
 
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-
-class Pagination(BaseModel):
-    """Offset-pagination block shared by list endpoints (max limit 500)."""
-
-    limit: int = Field(ge=1, le=500)
-    offset: int = Field(ge=0)
-    total: int = Field(ge=0)
+from callscore_api.schemas.common import PaginationMeta, Provenance
 
 
 class SourceRevisionInfo(BaseModel):
@@ -32,7 +26,7 @@ class GenerationManifestInfo(BaseModel):
     created_at: datetime
 
 
-class Provenance(BaseModel):
+class SourceProvenance(BaseModel):
     """Source-data provenance (distinct from calculation ``run_id``)."""
 
     source_revisions: list[SourceRevisionInfo] = []
@@ -57,8 +51,8 @@ class SecurityListItem(BaseModel):
 
 class SecurityListResponse(BaseModel):
     data: list[SecurityListItem]
-    pagination: Pagination
-    provenance: Provenance | None = None
+    pagination: PaginationMeta
+    provenance: SourceProvenance | None = None
 
 
 class ClassificationSpell(BaseModel):
@@ -104,7 +98,7 @@ class SecurityDetailResponse(BaseModel):
     coverage_analysts: int = 0
     price_coverage: PriceCoverage
     rating_event_count: int = 0
-    provenance: Provenance | None = None
+    provenance: SourceProvenance | None = None
 
 
 class PriceBar(BaseModel):
@@ -132,7 +126,7 @@ class PricesResponse(BaseModel):
     total: int
     downsampled: bool = False
     source_rows: int = 0
-    provenance: Provenance | None = None
+    provenance: SourceProvenance | None = None
 
 
 class RatingEventItem(BaseModel):
@@ -174,7 +168,7 @@ class RatingsResponse(BaseModel):
     security_id: str
     run_id: str | None = None
     data: list[RatingEventItem]
-    pagination: Pagination
+    pagination: PaginationMeta
 
 
 class ConsensusPoint(BaseModel):
@@ -206,7 +200,7 @@ class ConsensusResponse(BaseModel):
     run_id: str | None = None
     consensus: list[ConsensusPoint]
     target_outcomes: list[TargetOutcomeItem] = []
-    provenance: Provenance | None = None
+    provenance: SourceProvenance | None = None
 
 
 class HorizonAggregate(BaseModel):
@@ -220,22 +214,9 @@ class HorizonAggregate(BaseModel):
     excess_return_n: int = 0
 
 
-class RunProvenanceBlock(BaseModel):
-    run_id: str | None = None
-    status: str | None = None
-    as_of_date: date | None = None
-    knowledge_cutoff: datetime | None = None
-    methodology_version_id: int | None = None
-    methodology_fingerprint: str | None = None
-    source_fingerprint: str | None = None
-    algorithm_version: str | None = None
-    started_at: datetime | None = None
-    finished_at: datetime | None = None
-
-
 class SecurityPerformanceResponse(BaseModel):
     security_id: str
-    run: RunProvenanceBlock
+    run: Provenance
     n_ratings: int = 0
     n_investable: int = 0
     mean_excess_return: float | None = None

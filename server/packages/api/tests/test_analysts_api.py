@@ -509,7 +509,7 @@ def test_rating_detail(client: TestClient) -> None:
 # --------------------------------------------------------------------------- #
 
 
-def test_portfolio(client: TestClient, engine: Engine) -> None:
+def test_portfolio(client: TestClient) -> None:
     resp = client.get("/analysts/A1/portfolio", params={"run_id": "run-1"})
     assert resp.status_code == 200
     body = resp.json()
@@ -520,26 +520,16 @@ def test_portfolio(client: TestClient, engine: Engine) -> None:
     assert all("nav" in p and "benchmark_nav" in p and "drawdown" in p for p in body["points"])
     positions = body["positions"]
     assert positions["session_date"] == dates[-1]
-    # NOTE: ``publish_run_results`` does not yet populate ``portfolio_position``
-    # (engine ``portfolio_positions`` is not a published stage output), so the
-    # table is empty after a real run. Insert one row directly to verify the
-    # snapshot query path; the empty case is covered by the assertion above.
-    assert positions["rows"] == []
-    from sqlalchemy import text
-
-    with engine.begin() as conn:
-        conn.execute(
-            text(
-                "INSERT INTO portfolio_position "
-                "(run_id, analyst_id, session_date, security_id, weight, notional) "
-                "VALUES ('run-1', 'A1', :d, 'S1', 0.5, 50000.0)"
-            ),
-            {"d": dates[-1]},
-        )
-    snap = client.get("/analysts/A1/portfolio", params={"run_id": "run-1"}).json()
-    assert len(snap["positions"]["rows"]) == 1
-    assert snap["positions"]["rows"][0]["security_id"] == "S1"
-    assert snap["positions"]["rows"][0]["weight"] == 0.5
+    # ``portfolio_positions`` is a published stage output, so the snapshot is
+    # populated by the real run (no manual inserts).
+    assert positions["rows"], "expected portfolio_position rows for the latest session"
+    for row in positions["rows"]:
+        assert row["session_date"] == dates[-1]
+        assert row["analyst_id"] == "A1"
+        assert row["security_id"] in SECURITIES
+        assert -1.0 <= row["weight"] <= 1.0
+        # ``notional`` is a Decimal column -> serialized as a numeric string.
+        assert row["notional"] is None or float(row["notional"]) is not None
     # Date filter narrows the series.
     narrow = client.get(
         "/analysts/A1/portfolio",

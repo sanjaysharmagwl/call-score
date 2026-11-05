@@ -85,7 +85,7 @@ def list_securities(
         return mq.csv_response(mq.rows_to_csv(rows, fields), "securities.csv")
     return SecurityListResponse(
         data=rows,
-        pagination={"limit": limit, "offset": offset, "total": total},
+        pagination={"limit": limit, "offset": offset, "count": len(rows), "total": total},
         provenance=mq.provenance(engine),
     )
 
@@ -189,7 +189,7 @@ def get_ratings(
         security_id=security_id,
         run_id=run_id,
         data=rows,
-        pagination={"limit": limit, "offset": offset, "total": total},
+        pagination={"limit": limit, "offset": offset, "count": len(rows), "total": total},
     )
 
 

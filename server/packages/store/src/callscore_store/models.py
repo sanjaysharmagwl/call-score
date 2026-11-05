@@ -513,6 +513,11 @@ class CalcRun(Base):
     universe_filter_json: Mapped[str | None] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(50))
     progress: Mapped[float] = mapped_column(Float, default=0.0)
+    # Insert timestamp (schema v3). Nullable only for rows migrated from v2
+    # whose ``started_at`` was NULL (queued-never-run); readers fall back.
+    created_at: Mapped[datetime | None] = mapped_column(
+        UTCDateTime, server_default=text("CURRENT_TIMESTAMP")
+    )
     started_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
     finished_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
     row_counts_json: Mapped[str | None] = mapped_column(Text)

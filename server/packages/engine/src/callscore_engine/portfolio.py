@@ -74,12 +74,17 @@ _NAV_SCHEMA: dict[str, pl.DataType] = {
     "drawdown": pl.Float64(),
 }
 
+# ``PORTFOLIO_POSITIONS_FRAME`` columns: one row per
+# (analyst_id, session_date, security_id). ``weight`` is the scaled target
+# weight (segments of the same security are already summed upstream in
+# ``_daily_weights``); ``notional`` is ``weight * nav`` for that session, or
+# null when no NAV frame is supplied.
 _POSITIONS_SCHEMA: dict[str, pl.DataType] = {
     "analyst_id": pl.String(),
     "session_date": pl.Date(),
     "security_id": pl.String(),
-    "interval_id": pl.String(),
     "weight": pl.Float64(),
+    "notional": pl.Float64(),
 }
 
 _COST_RATE_DIVISOR = 10_000.0
@@ -520,12 +525,17 @@ def portfolio_positions(
     classifications: pl.DataFrame,
     sessions: pl.DataFrame,
     context: RunContext,
+    portfolio_nav: pl.DataFrame | None = None,
 ) -> pl.DataFrame:
-    """Scaled target weights per ``(analyst_id, session_date, security_id, interval_id)``.
+    """Scaled target weights per ``(analyst_id, session_date, security_id)``.
 
     Same weight timeline ``simulate_portfolios`` uses, restricted to sessions
-    where a segment is active. Sorted by ``(analyst_id, session_date,
-    security_id, interval_id)``.
+    where a segment is active. Columns match ``PORTFOLIO_POSITIONS_FRAME`` /
+    the ``portfolio_position`` table (minus ``run_id``): ``weight`` aggregates
+    every active segment of the security, so no ``interval_id`` is emitted;
+    ``notional`` is ``weight * nav`` looked up in ``portfolio_nav`` (null when
+    the frame is not supplied or has no row for the session). Sorted by
+    ``(analyst_id, session_date, security_id)``.
     """
     by_analyst, calendars, _ = _prepare(
         intervals,
@@ -540,23 +550,31 @@ def portfolio_positions(
     if not by_analyst:
         return pl.DataFrame(schema=_POSITIONS_SCHEMA)
 
+    nav_by_key: dict[tuple[str, date], float] = {}
+    if portfolio_nav is not None and not portfolio_nav.is_empty():
+        for analyst_id, session_date, nav in portfolio_nav.select(
+            "analyst_id", "session_date", "nav"
+        ).iter_rows():
+            nav_by_key[(analyst_id, session_date)] = float(nav)
+
     rows: list[dict[str, object]] = []
     for analyst_id in sorted(by_analyst):
-        row_dates, weights, segment_at = _daily_weights(
+        row_dates, weights, _ = _daily_weights(
             by_analyst[analyst_id], calendars, context.as_of_date
         )
         for session_date in row_dates:
             for security_id in sorted(weights.get(session_date, {})):
-                segment = segment_at[(session_date, security_id)]
+                weight = weights[session_date][security_id]
+                nav = nav_by_key.get((analyst_id, session_date))
                 rows.append(
                     {
                         "analyst_id": analyst_id,
                         "session_date": session_date,
                         "security_id": security_id,
-                        "interval_id": segment.interval_id,
-                        "weight": weights[session_date][security_id],
+                        "weight": weight,
+                        "notional": weight * nav if nav is not None else None,
                     }
                 )
     return pl.DataFrame(rows, schema=_POSITIONS_SCHEMA).sort(
-        "analyst_id", "session_date", "security_id", "interval_id"
+        "analyst_id", "session_date", "security_id"
     )

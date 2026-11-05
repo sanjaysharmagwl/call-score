@@ -404,9 +404,83 @@ def list_backtests(
     return rows[offset : offset + limit], total
 
 
-def _summary(row: Mapping[str, Any]) -> dict[str, Any]:
+_SPEC_SUMMARY_KEYS = ("selection", "mode", "sizing", "rebalance", "start_date", "end_date")
+"""Spec fields surfaced as ``spec_summary`` on list rows."""
+
+_KEY_STAT_FIELDS = ("annualized_return", "sharpe", "max_drawdown", "n_sessions")
+"""``key_stats`` output fields, in response order."""
+
+# stored ``backtest_stat.stat_code`` -> ``key_stats`` field name.
+_KEY_STAT_CODES = {
+    "annualized_return": "annualized_return",
+    "sharpe_ratio": "sharpe",
+    "max_drawdown": "max_drawdown",
+    "n_sessions": "n_sessions",
+}
+
+
+def spec_summary(row: Mapping[str, Any]) -> dict[str, Any] | None:
+    """Compact spec digest for a list row, parsed from ``config_json``.
+
+    Pure config inspection — no engine calls. Returns ``None`` when the row
+    carries no spec keys (e.g. detail views that already expose ``spec``).
+    """
     config = _json_object(row.get("config_json"))
-    error = config.get("error")
+    summary = {key: config[key] for key in _SPEC_SUMMARY_KEYS if config.get(key) is not None}
+    return summary or None
+
+
+def backtest_key_stats(ctx: Context, backtest_ids: list[str]) -> dict[str, dict[str, float | None]]:
+    """Fetch headline stats for the given backtests in one query.
+
+    Returns ``{backtest_id: {field: value | None}}`` for every requested id;
+    missing stat codes stay ``None``. Callers restrict to ``succeeded`` rows.
+    """
+    ids = [str(bid) for bid in backtest_ids]
+    out: dict[str, dict[str, float | None]] = {
+        bid: {field: None for field in _KEY_STAT_FIELDS} for bid in ids
+    }
+    if not ids:
+        return out
+    tbl = table_of(BacktestStat)
+    stmt = (
+        select(tbl.c.backtest_id, tbl.c.stat_code, tbl.c.value)
+        .where(tbl.c.backtest_id.in_(ids), tbl.c.stat_code.in_(tuple(_KEY_STAT_CODES)))
+        .order_by(tbl.c.backtest_id.asc(), tbl.c.stat_code.asc())
+    )
+    if isinstance(ctx, Engine):
+        with ctx.connect() as conn:
+            rows = [dict(r) for r in conn.execute(stmt).mappings()]
+    elif isinstance(ctx, Session | Connection):
+        rows = [dict(r) for r in ctx.execute(stmt).mappings()]
+    else:
+        raise TypeError(f"unsupported context type: {type(ctx).__name__}")
+    for row in rows:
+        bid = str(row["backtest_id"])
+        field = _KEY_STAT_CODES.get(str(row["stat_code"]))
+        value = row["value"]
+        if bid in out and field is not None and value is not None:
+            out[bid][field] = float(value)
+    return out
+
+
+def list_row_summary(row: Mapping[str, Any]) -> dict[str, Any]:
+    """Summary dict for one raw ``backtest`` table row (parses ``config_json``).
+
+    Includes ``spec_summary``; callers add ``key_stats`` when available.
+    """
+    return _summary(row) | {"spec_summary": spec_summary(row)}
+
+
+def _summary(row: Mapping[str, Any]) -> dict[str, Any]:
+    """Summary fields for a raw ``backtest`` row or an already-summarized dict.
+
+    ``benchmark_id``/``error`` live inside ``config_json`` on raw rows; summary
+    dicts carry them as top-level keys already.
+    """
+    config = _json_object(row.get("config_json"))
+    error = row["error"] if "error" in row else config.get("error")
+    benchmark_id = row["benchmark_id"] if "benchmark_id" in row else config.get("benchmark_id")
     return {
         "backtest_id": str(row["backtest_id"]),
         "name": row.get("name"),
@@ -414,7 +488,7 @@ def _summary(row: Mapping[str, Any]) -> dict[str, Any]:
         "created_at": row.get("created_at"),
         "started_at": row.get("started_at"),
         "finished_at": row.get("finished_at"),
-        "benchmark_id": config.get("benchmark_id"),
+        "benchmark_id": benchmark_id,
         "error": error if isinstance(error, dict) else None,
     }
 

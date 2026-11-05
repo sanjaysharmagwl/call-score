@@ -21,6 +21,7 @@ from callscore_store.models import (
     Security,
     SecurityDaily,
 )
+from callscore_store.repositories.runs import create_calc_run, get_calc_run
 from callscore_store.schema import (
     SCHEMA_VERSION,
     SchemaTooNewError,
@@ -162,6 +163,72 @@ class TestBootstrap:
         assert firm == ("F1", "Firm One", None)
         assert "firm_id" in analyst_cols
         assert "rating_event" in table_names(engine)
+
+    def test_upgrade_v2_to_v3_adds_calc_run_created_at(self, tmp_path: Path) -> None:
+        """A v2 database gains ``calc_run.created_at`` and existing rows are
+        backfilled from ``started_at``; queued-never-run rows stay NULL."""
+        engine = _engine(tmp_path)
+        bootstrap(engine)
+        assert current_version(engine) == SCHEMA_VERSION
+        # Seed two runs sharing one methodology version: one that ran
+        # (started_at set), one still queued.
+        with Session(engine) as session:
+            mv = MethodologyVersion(
+                params_json="{}",
+                fingerprint="0" * 64,
+                is_baseline=True,
+                created_at=_TS,
+            )
+            session.add(mv)
+            session.flush()
+            ran = CalcRun(
+                run_id="R1",
+                methodology_version_id=mv.id,
+                as_of_date=_AS_OF,
+                knowledge_cutoff=_TS,
+                status="succeeded",
+                started_at=_TS,
+                algorithm_version="v1",
+            )
+            queued = CalcRun(
+                run_id="R2",
+                methodology_version_id=mv.id,
+                as_of_date=_AS_OF,
+                knowledge_cutoff=_TS,
+                status="queued",
+                algorithm_version="v1",
+            )
+            session.add_all([ran, queued])
+            session.flush()
+            mv_id = int(mv.id)
+            session.commit()
+        # Simulate a v2 database: drop the v3 column and rewind the stamp.
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE calc_run DROP COLUMN created_at"))
+            conn.execute(text("UPDATE schema_version SET version = 2 WHERE id = 1"))
+        assert current_version(engine) == 2
+        assert bootstrap(engine) == SCHEMA_VERSION
+        assert current_version(engine) == SCHEMA_VERSION
+        with engine.connect() as conn:
+            cols = {r[1] for r in conn.execute(text("PRAGMA table_info(calc_run)"))}
+        assert "created_at" in cols
+        # Existing run's created_at was backfilled from started_at.
+        ran_row = get_calc_run(engine, "R1")
+        queued_row = get_calc_run(engine, "R2")
+        assert ran_row is not None and ran_row["created_at"] == _TS
+        assert queued_row is not None and queued_row["created_at"] is None
+        # A fresh repo insert on the migrated DB sets created_at explicitly
+        # (the ALTER-added column carries no server default).
+        create_calc_run(
+            engine,
+            run_id="R3",
+            methodology_version_id=mv_id,
+            as_of_date=_AS_OF,
+            knowledge_cutoff=_TS,
+            algorithm_version="v1",
+        )
+        fresh_row = get_calc_run(engine, "R3")
+        assert fresh_row is not None and fresh_row["created_at"] is not None
 
     def test_newer_version_refused(self, tmp_path: Path) -> None:
         engine = _engine(tmp_path)

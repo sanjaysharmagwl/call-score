@@ -51,13 +51,34 @@ SortParam = Annotated[str, Field(min_length=1, max_length=64)]
 
 
 class Provenance(BaseModel):
-    """Optional input-provenance block for detail/compare responses."""
+    """Optional input-provenance block for detail/compare responses.
+
+    Single shared shape covering both producers:
+
+    * run-scoped payloads (analyst/leaderboard endpoints emit
+      ``run_id``/``methodology_fingerprint``/``as_of_date``/``run_status``;
+      market-data run blocks emit ``status`` plus the extra run columns
+      ``knowledge_cutoff``/``methodology_version_id``/``source_fingerprint``/
+      ``algorithm_version``/``started_at``/``finished_at``), and
+    * ``Envelope.provenance``, which may carry ``source_revision``.
+
+    Fields that do not apply to a given producer are simply ``None``.
+    """
 
     run_id: str | None = None
     methodology_fingerprint: str | None = None
     as_of_date: date | None = None
     knowledge_cutoff: datetime | None = None
     source_revision: str | None = None
+    run_status: str | None = None
+    """Run lifecycle status under the analysts-endpoint field name."""
+    status: str | None = None
+    """Run lifecycle status under the market-data ``run`` block field name."""
+    methodology_version_id: int | None = None
+    source_fingerprint: str | None = None
+    algorithm_version: str | None = None
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
 
 
 T = TypeVar("T")

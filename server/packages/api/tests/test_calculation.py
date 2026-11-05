@@ -183,6 +183,7 @@ def test_execute_run_publishes_all_stage_tables(db_path: Path) -> None:
     assert counts["interval_contribution"] >= 1
     assert counts["event_window"] == 1
     assert counts["portfolio_nav"] >= 1
+    assert counts["portfolio_position"] >= 1
     assert counts["analyst_metric"] > 0
     assert counts["analyst_composite"] == 1
 
@@ -190,7 +191,7 @@ def test_execute_run_publishes_all_stage_tables(db_path: Path) -> None:
     assert run is not None
     assert run["status"] == "succeeded"
     artifacts = json.loads(run["row_counts_json"])["stage_artifacts"]
-    assert len(artifacts) == 12
+    assert len(artifacts) == 13
     assert run["source_fingerprint"] is not None
 
 

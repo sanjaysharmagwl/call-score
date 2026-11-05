@@ -312,6 +312,21 @@ def test_run_failed_to_queued_retry(tmp_path: Path) -> None:
     assert get_calc_run(engine, "run-2")["status"] == "queued"
 
 
+def test_create_calc_run_sets_created_at(tmp_path: Path) -> None:
+    """``create_calc_run`` stamps ``created_at`` at insert (queued runs too)."""
+    engine = _engine(tmp_path)
+    _run(engine)
+    run = get_calc_run(engine, "run-1")
+    assert run is not None
+    created_at = run["created_at"]
+    assert created_at is not None
+    assert created_at.tzinfo is not None
+    assert created_at.utcoffset() == timedelta(0)
+    assert created_at <= datetime.now(UTC)
+    # A queued run that never starts still has created_at (unlike started_at).
+    assert run["started_at"] is None
+
+
 def test_list_calc_runs_filters_and_sort(tmp_path: Path) -> None:
     engine = _engine(tmp_path)
     _seed(engine)
@@ -381,6 +396,18 @@ def _stage_frames() -> dict[str, pl.DataFrame]:
                 }
             ],
         ),
+        "portfolio_positions": _frame(
+            "portfolio_positions",
+            [
+                {
+                    "analyst_id": "A1",
+                    "session_date": D0,
+                    "security_id": "S1",
+                    "weight": 0.5,
+                    "notional": 50000.0,
+                }
+            ],
+        ),
         "metric_results": _frame("metric_results", [_metric_row()]),
         "composites": _frame(
             "composites",
@@ -420,8 +447,10 @@ def test_publish_run_results_success(tmp_path: Path) -> None:
     )
     assert counts["rating_interval"] == 1
     assert counts["analyst_metric"] == 1
+    assert counts["portfolio_position"] == 1
     assert _count(engine, "rating_interval") == 1
     assert _count(engine, "interval_exposure") == 1
+    assert _count(engine, "portfolio_position") == 1
     run = get_calc_run(engine, "run-1")
     assert run["status"] == "succeeded" and run["progress"] == 1.0
     assert run["source_fingerprint"] == "c" * 64

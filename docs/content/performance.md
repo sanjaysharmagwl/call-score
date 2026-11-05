@@ -94,12 +94,6 @@ regenerated). The packages remain installed via `uv sync
 
 ## Known gaps (documented, not fixed)
 
-- **`portfolio_position` never populated**: the engine has
-  `portfolio.portfolio_positions()` but `runner.run_pipeline` does not emit
-  a positions frame, `callscore_core.frames` has no positions contract, and
-  the store frame columns (`interval_id`, `notional`) don't line up with the
-  engine frame. Wiring it needs contract + runner + `STAGE_TABLES` changes —
-  deferred.
 - **`calc_run.created_at` missing**: `calc_run` has `started_at`/
   `finished_at` but no creation timestamp; adding it is a schema v3
   migration (`_UPGRADES[2]`, `ALTER TABLE calc_run ADD COLUMN created_at`)

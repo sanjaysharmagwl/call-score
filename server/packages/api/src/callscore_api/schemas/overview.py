@@ -1,15 +1,11 @@
-"""Response models for GET /api/overview.
-
-NOTE (merge): shares ``Provenance``/``RunProvenanceBlock`` shapes with
-``schemas.securities``; both are expected to converge on
-``callscore_api.schemas.common`` once T13's foundation lands.
-"""
+"""Response models for GET /api/overview."""
 
 from datetime import date, datetime
 
 from pydantic import BaseModel, Field
 
-from callscore_api.schemas.securities import Provenance, RunProvenanceBlock
+from callscore_api.schemas.common import Provenance
+from callscore_api.schemas.securities import SourceProvenance
 
 
 class ScoreBucket(BaseModel):
@@ -53,8 +49,8 @@ class DataCoverage(BaseModel):
 
 
 class OverviewResponse(BaseModel):
-    run: RunProvenanceBlock | None = None
+    run: Provenance | None = None
     analysts: AnalystsOverview
     run_counts_by_status: dict[str, int] = {}
     data_coverage: DataCoverage
-    provenance: Provenance
+    provenance: SourceProvenance

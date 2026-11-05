@@ -28,7 +28,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from callscore_store.models import Base
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 class SchemaError(RuntimeError):
@@ -109,6 +109,29 @@ def _upgrade_1_to_2(conn: Connection) -> None:
 
 
 _UPGRADES[1] = _upgrade_1_to_2
+
+
+def _upgrade_2_to_3(conn: Connection) -> None:
+    """v2 -> v3: add ``calc_run.created_at`` (row insert timestamp, UTC).
+
+    SQLite ``ALTER TABLE ADD COLUMN`` forbids ``CURRENT_TIMESTAMP`` as a
+    column default, so the column is added nullable without one and existing
+    rows are stamped from ``started_at`` where available. Rows that never ran
+    (queued with NULL ``started_at``) keep NULL ``created_at``; readers fall
+    back to ``started_at`` for them. Fresh inserts set ``created_at``
+    explicitly (and the ORM ``server_default`` covers direct ORM inserts).
+
+    The column check keeps this upgrade safe on databases whose ``calc_run``
+    was created by ``Base.metadata.create_all`` (fresh bootstraps and v1 -> v2
+    upgrades already produce the current column set).
+    """
+    cols = {row[1] for row in conn.execute(text("PRAGMA table_info(calc_run)"))}
+    if "created_at" not in cols:
+        conn.execute(text("ALTER TABLE calc_run ADD COLUMN created_at DATETIME"))
+    conn.execute(text("UPDATE calc_run SET created_at = started_at WHERE created_at IS NULL"))
+
+
+_UPGRADES[2] = _upgrade_2_to_3
 
 
 def bootstrap(engine: Engine) -> int:
