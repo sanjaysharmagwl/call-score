@@ -1,0 +1,6 @@
+security_id,from_date,to_date,exchange_id,currency,sector_id,region,cap_bucket,listing_date,delisting_date
+S1,2025-01-01,,XNYS,USD,TECH,NA,large,2024-06-03,
+S2,2025-01-01,,XNYS,USD,TECH,NA,mid,2024-06-03,
+S3,2025-01-01,,XNYS,USD,HLTH,NA,large,2024-06-03,
+S4,2025-01-01,,XNYS,USD,HLTH,NA,small,2024-06-03,
+S5,2025-01-01,2025-04-30,XNYS,USD,FIN,NA,mid,2024-06-03,2025-04-30

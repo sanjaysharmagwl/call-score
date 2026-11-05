@@ -30,12 +30,29 @@ class MetricDefinition(FrozenModel):
     in_composite: bool
     inference: Literal["quarter_block_bootstrap", "none"]
     shrink: bool
+    aggregate: Literal["mean", "annualized_mean", "annualized_sharpe", "none"]
+    """How ``metric_samples`` values combine into the metric (and each bootstrap draw):
+    ``mean`` -> mean; ``annualized_mean`` -> 252 * mean;
+    ``annualized_sharpe`` -> sqrt(252) * mean / sample_std. Defaults from ``inference``."""
+    null_value: float | None = None
+    """No-skill value for the t-stat and significance; ``None`` means no natural null."""
+
+    @model_validator(mode="before")
+    @classmethod
+    def default_aggregate(cls, data: object) -> object:
+        if isinstance(data, dict) and "aggregate" not in data:
+            return {**data, "aggregate": "none" if data.get("inference") == "none" else "mean"}
+        return data
 
     @model_validator(mode="after")
     def coherent(self) -> Self:
         unknown = set(self.required_inputs) - FRAME_CONTRACTS.keys()
         if unknown:
             raise ValueError(f"Unknown required inputs: {sorted(unknown)}")
+        if (self.inference == "none") != (self.aggregate == "none"):
+            raise ValueError("Bootstrapped metrics need a sample aggregate, others none")
+        if self.null_value is not None and self.inference == "none":
+            raise ValueError("A null value needs an inference method")
         if self.in_composite and self.direction == "descriptive":
             raise ValueError("Composite metrics need a higher/lower direction")
         if self.shrink and self.inference == "none":
@@ -85,6 +102,7 @@ METRIC_DEFINITIONS: tuple[MetricDefinition, ...] = (
         in_composite=True,
         inference=_BOOT,
         shrink=True,
+        null_value=0.0,
     ),
     _m(
         code="hit_rate",
@@ -100,6 +118,7 @@ METRIC_DEFINITIONS: tuple[MetricDefinition, ...] = (
         in_composite=True,
         inference=_BOOT,
         shrink=True,
+        null_value=0.5,
     ),
     _m(
         code="information_coefficient",
@@ -113,7 +132,7 @@ METRIC_DEFINITIONS: tuple[MetricDefinition, ...] = (
         unavailable_when="fewer than 10 pairs or either series constant",
         minimum_observations=10,
         in_composite=True,
-        inference=_BOOT,
+        inference="none",
         shrink=False,
     ),
     _m(
@@ -130,6 +149,8 @@ METRIC_DEFINITIONS: tuple[MetricDefinition, ...] = (
         in_composite=True,
         inference=_BOOT,
         shrink=False,
+        aggregate="annualized_sharpe",
+        null_value=0.0,
     ),
     _m(
         code="annualized_alpha",
@@ -145,6 +166,8 @@ METRIC_DEFINITIONS: tuple[MetricDefinition, ...] = (
         in_composite=False,
         inference=_BOOT,
         shrink=True,
+        aggregate="annualized_mean",
+        null_value=0.0,
     ),
     _m(
         code="max_drawdown",
@@ -176,6 +199,7 @@ METRIC_DEFINITIONS: tuple[MetricDefinition, ...] = (
         in_composite=True,
         inference=_BOOT,
         shrink=True,
+        null_value=0.0,
     ),
     _m(
         code="signed_car",

@@ -1,0 +1,922 @@
+[
+  {
+    "interval_id": "e01",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-02-26",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e01",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-02-26",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e01",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-02-26",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e01",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-02-26",
+    "position_weight": 0.5,
+    "excess_return": 0.00039991583163301314,
+    "contribution": 0.00019995791581650657,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e02",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-03-03",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e02",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-03-03",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e02",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-03-03",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e02",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-03",
+    "position_weight": 1.0,
+    "excess_return": -0.0004051384206416042,
+    "contribution": -0.0004051384206416042,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e04",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-03-19",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e04",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-03-19",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e04",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-03-19",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e04",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-19",
+    "position_weight": 0.5,
+    "excess_return": -2.0174441743847638e-06,
+    "contribution": -1.0087220871923819e-06,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e06",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-02-27",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e06",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-02-27",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e06",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-02-27",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e06",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-02-27",
+    "position_weight": 0.0,
+    "excess_return": 0.0012171490150942876,
+    "contribution": 0.0,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e08",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-02-28",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e08",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-02-28",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e08",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-02-28",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e08",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-02-28",
+    "position_weight": 1.0,
+    "excess_return": 0.0026156806659629606,
+    "contribution": 0.0026156806659629606,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e09",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-03-14",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e09",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-03-14",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e09",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-03-14",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e09",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-14",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e10",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-03-25",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e10",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-03-25",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e10",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-03-25",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e10",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-25",
+    "position_weight": 0.5,
+    "excess_return": 0.0032308097886146747,
+    "contribution": 0.0016154048943073374,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e11",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-03-04",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e11",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-03-04",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e11",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-03-04",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e11",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-04",
+    "position_weight": -0.5,
+    "excess_return": 0.007367038371450141,
+    "contribution": -0.0036835191857250704,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e12",
+    "analyst_id": "A1",
+    "horizon": "d126",
+    "entry_session": "2025-03-06",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e12",
+    "analyst_id": "A1",
+    "horizon": "d252",
+    "entry_session": "2025-03-06",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e12",
+    "analyst_id": "A1",
+    "horizon": "d63",
+    "entry_session": "2025-03-06",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e12",
+    "analyst_id": "A1",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-06",
+    "position_weight": 1.0,
+    "excess_return": -1.0385101176562974,
+    "contribution": -1.0385101176562974,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e13",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-02-28",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e13",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-02-28",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e13",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-02-28",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e13",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-02-28",
+    "position_weight": 0.5,
+    "excess_return": 0.0006022845419508815,
+    "contribution": 0.0003011422709754408,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e14",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-03-13",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e14",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-03-13",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e14",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-03-13",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e14",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-13",
+    "position_weight": 0.0,
+    "excess_return": -0.0002029348649033036,
+    "contribution": -0.0,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e15",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e15",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e15",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e15",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": 0.00040297213810447374,
+    "contribution": -0.00020148606905223687,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e16",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-03-03",
+    "position_weight": -1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e16",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-03-03",
+    "position_weight": -1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e16",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-03-03",
+    "position_weight": -1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e16",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-03",
+    "position_weight": -1.0,
+    "excess_return": -0.00040640548791182063,
+    "contribution": 0.00040640548791182063,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e17",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-03-21",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e17",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-03-21",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e17",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-03-21",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e17",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-21",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e18",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-04-08",
+    "position_weight": -1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e18",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-04-08",
+    "position_weight": -1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e18",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-04-08",
+    "position_weight": -1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e18",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-04-08",
+    "position_weight": -1.0,
+    "excess_return": -0.5082676150119778,
+    "contribution": 0.5082676150119778,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e19",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-03-05",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e19",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-03-05",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e19",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-03-05",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e19",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-05",
+    "position_weight": 0.5,
+    "excess_return": 0.010502627430096112,
+    "contribution": 0.005251313715048056,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e20",
+    "analyst_id": "A2",
+    "horizon": "d126",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e20",
+    "analyst_id": "A2",
+    "horizon": "d252",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e20",
+    "analyst_id": "A2",
+    "horizon": "d63",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e20",
+    "analyst_id": "A2",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.0,
+    "excess_return": 0.005895298734487353,
+    "contribution": 0.0,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e21",
+    "analyst_id": "A3",
+    "horizon": "d126",
+    "entry_session": "2025-03-04",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e21",
+    "analyst_id": "A3",
+    "horizon": "d252",
+    "entry_session": "2025-03-04",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e21",
+    "analyst_id": "A3",
+    "horizon": "d63",
+    "entry_session": "2025-03-04",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e21",
+    "analyst_id": "A3",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-04",
+    "position_weight": 0.5,
+    "excess_return": 0.00302892748962158,
+    "contribution": 0.00151446374481079,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e24",
+    "analyst_id": "A3",
+    "horizon": "d126",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e24",
+    "analyst_id": "A3",
+    "horizon": "d252",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e24",
+    "analyst_id": "A3",
+    "horizon": "d63",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e24",
+    "analyst_id": "A3",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-27",
+    "position_weight": -0.5,
+    "excess_return": 0.007549447407244392,
+    "contribution": -0.003774723703622196,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e27",
+    "analyst_id": "A3",
+    "horizon": "d126",
+    "entry_session": "2025-03-10",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e27",
+    "analyst_id": "A3",
+    "horizon": "d252",
+    "entry_session": "2025-03-10",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e27",
+    "analyst_id": "A3",
+    "horizon": "d63",
+    "entry_session": "2025-03-10",
+    "position_weight": 1.0,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e27",
+    "analyst_id": "A3",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-10",
+    "position_weight": 1.0,
+    "excess_return": 0.0014011693324649244,
+    "contribution": 0.0014011693324649244,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e28",
+    "analyst_id": "A3",
+    "horizon": "d126",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e28",
+    "analyst_id": "A3",
+    "horizon": "d252",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e28",
+    "analyst_id": "A3",
+    "horizon": "d63",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e28",
+    "analyst_id": "A3",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-07",
+    "position_weight": 0.5,
+    "excess_return": -0.005767329016796774,
+    "contribution": -0.002883664508398387,
+    "unavailable_reason": null
+  },
+  {
+    "interval_id": "e29",
+    "analyst_id": "A3",
+    "horizon": "d126",
+    "entry_session": "2025-03-12",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e29",
+    "analyst_id": "A3",
+    "horizon": "d252",
+    "entry_session": "2025-03-12",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e29",
+    "analyst_id": "A3",
+    "horizon": "d63",
+    "entry_session": "2025-03-12",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e29",
+    "analyst_id": "A3",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-12",
+    "position_weight": null,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "non_investable"
+  },
+  {
+    "interval_id": "e30",
+    "analyst_id": "A3",
+    "horizon": "d126",
+    "entry_session": "2025-03-12",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e30",
+    "analyst_id": "A3",
+    "horizon": "d252",
+    "entry_session": "2025-03-12",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e30",
+    "analyst_id": "A3",
+    "horizon": "d63",
+    "entry_session": "2025-03-12",
+    "position_weight": 0.5,
+    "excess_return": null,
+    "contribution": null,
+    "unavailable_reason": "horizon_incomplete"
+  },
+  {
+    "interval_id": "e30",
+    "analyst_id": "A3",
+    "horizon": "to_exit",
+    "entry_session": "2025-03-12",
+    "position_weight": 0.5,
+    "excess_return": 0.010754698750846003,
+    "contribution": 0.005377349375423002,
+    "unavailable_reason": null
+  }
+]

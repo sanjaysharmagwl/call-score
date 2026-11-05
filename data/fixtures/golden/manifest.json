@@ -1,0 +1,91 @@
+{
+  "fixture": "golden",
+  "version": 1,
+  "note": "Deterministic hand-designed golden fixture for the callscore engine. Inputs are committed CSVs; expected outputs are JSON row arrays matching the callscore_core.frames contracts exactly (column names, order, dtypes, sort order). Regenerate with: python3 server/packages/engine/tests/golden/reference.py (stdlib only; never imports callscore_engine/callscore_core).",
+  "run_context": {
+    "as_of_date": "2025-05-23",
+    "knowledge_cutoff": "2025-05-24T00:00:00Z",
+    "note": "knowledge_cutoff excludes event e26 (knowledge_ts 2025-05-26T00:00:00Z), which would otherwise correct e11; e11 therefore remains a sell interval in every expected output."
+  },
+  "calendar": {
+    "exchange_id": "XNYS",
+    "timezone": "America/New_York",
+    "open_local": "09:30",
+    "close_local": "16:00",
+    "range": "2025-02-24..2025-05-23",
+    "sessions": 62,
+    "holidays": ["2025-03-17", "2025-04-18", "2025-05-02"],
+    "dst": "US DST starts 2025-03-09 inside the range; open/close UTC timestamps shift 14:30Z/21:00Z (EST) to 13:30Z/20:00Z (EDT)."
+  },
+  "methodologies": {
+    "file": "methodologies.json",
+    "variants": {
+      "default": "Methodology() defaults: next_open, hard_close, sector benchmark, horizons (63,126,252).",
+      "decay": "expiry_policy=decay, decay_days=5; decay_start_session = first session after the expiry session, exit = close of the 5th session after it.",
+      "fixed": "fixed_horizons_days=(5,10), primary_fixed_horizon_days=10 so d5/d10 censoring is visible inside 62 sessions."
+    }
+  },
+  "market_events": {
+    "split": "S2 2:1 split at session index 30 (adj_factor 1->2, raw prices halve).",
+    "dividend": "S3 cash_dividend 0.30 at session index 40 (reinvested at that open).",
+    "delisting": "S5 bankrupt at session index 45 (last traded session 2025-04-30), final_return=-1.0; row retained, never dropped.",
+    "halt": "S4 is_halted sessions index 20..24 (open=close=previous close, tr_index flat).",
+    "missing_benchmark": "inputs/benchmark_daily_missing_day.csv is the full benchmark_daily minus SECTOR_TECH on 2025-04-01 (session index 25), a date on which many intervals exit; any run consuming it must fail with MissingBenchmarkData rather than assume zero."
+  },
+  "tolerances": {
+    "counts_ids_timestamps": "exact",
+    "floats": "1e-9 relative",
+    "tr_index_recursion": "recompute tr_index from stored open/close/adj_factor/cash_dividend; |rel err| <= 1e-9"
+  },
+  "derivation_notes": {
+    "available_ts": "max(effective_ts, knowledge_ts); all events have effective_ts == announced_ts except e26 (invisible).",
+    "entry": "next_open: first session open strictly after available_ts on the security's exchange. Announcement times: PRE=12:00Z (same-day open), DAY=15:00Z and POST=21:30Z (next session open), valid across the EST/EDT switch.",
+    "interval_id": "equals event_id. Same-canonical actions (e03 reiteration, e07 pt_change) open no interval and extend expiry to the newest non-null expiry; e22/e23 are hidden by the visible 2-deep correction chain e23->e24, so e24 (sell) is the interval-opening event.",
+    "exit_reasons": {
+      "superseded": "exit at the next interval's entry point (an open).",
+      "dropped": "e05 drop exits e04's interval at the drop's would-be entry point (2025-04-01 open).",
+      "expired": "hard_close: close of last session on/before expiry_date; decay: close of session expiry_idx+5 with decay_start_session=expiry_idx+1.",
+      "coverage_ended": "e28 exits at close of last session on/before A3's S5 coverage to_date (session index 40).",
+      "analyst_left": "A2's employment spell ends session index 50; open A2 intervals exit at its close (e15 under decay, e18 under all policies).",
+      "delisted": "e12 exits at S5's delisting session close; terminal value = close level x (1 + final_return) = 0.",
+      "run_end": "e30 has null expiry and is the last interval; exits at as_of close 2025-05-23."
+    },
+    "e29_short_interval": "e29 announced post-close 2025-03-11 and e30 pre-market 2025-03-12 both get entry 2025-03-12 open, so the sell interval has entry == exit: kept, is_investable=false, non_investable_reason=shorter_than_one_session, exit_reason=superseded.",
+    "non_investable": "e09 under_review (suspend) and e17 restricted are intervals with null weight; never treated as hold.",
+    "returns": "to_exit plus d63/d126/d252 (default, decay) or d5/d10 (fixed). Fixed d{n} ends at the close of the session n sessions after entry; beyond as_of => unavailable_reason=horizon_incomplete with null legs. Non-investable intervals => unavailable_reason=non_investable. Delisting terminates any horizon reaching it (terminated_by_delisting=true, final_return applied to the terminal close level).",
+    "benchmark": "sector mode: SECTOR_<sector> of the security's classification spell at entry_session (S1/S2 TECH, S3/S4 HLTH, S5 FIN).",
+    "contributions": "absolute weights strong_buy=1.0, buy=0.5, hold=0.0, sell=-0.5, strong_sell=-1.0. to_exit = weight x to_exit excess for single-segment policies; under decay it is the sum over exposure segments (full weight to expiry close, then w x (1-k/5) per decay session). Fixed horizons use the entry (first-segment) weight.",
+    "ambiguities_resolved": [
+      "Delisted exit_price is reported as the terminal price level close_px x (1+final_return) (0.0 for the bankruptcy), so price-basis and TR-basis legs stay consistent; stock_return = -1.0 exactly.",
+      "Unavailable return rows keep start/end session+point populated where the schedule is known (non_investable rows carry the interval's exit point; horizon_incomplete rows have null end_*); entry/exit prices and returns are null.",
+      "benchmark_id is populated on every return row, including unavailable ones, because benchmark assignment is interval-level, not leg-level.",
+      "decay_start_session is set only for intervals whose binding exit is expired under the decay policy.",
+      "flags carries the structural non-investable reason (shorter_than_one_session) when present; canonical-rating reasons (under_review, restricted) are reported via non_investable_reason only."
+    ]
+  },
+  "interval_notes": {
+    "e01": "buy 2025-02-26 open -> superseded at e02 entry 2025-03-03 open",
+    "e02": "strong_buy 2025-03-03 -> superseded at e04 entry 2025-03-19 open (e03 reiteration extended expiry to idx25, never binding)",
+    "e04": "buy 2025-03-19 -> dropped 2025-04-01 open",
+    "e06": "hold 2025-02-27, expiry extended by e07 pt_change to idx25; expired idx25 close (default/fixed), idx30 close (decay)",
+    "e08": "strong_buy 2025-02-28 -> superseded at e09 suspend entry 2025-03-14 open",
+    "e09": "under_review non-investable 2025-03-14 -> superseded at e10 entry 2025-03-25 open",
+    "e10": "buy 2025-03-25 -> expired idx35 close (default), idx40 close (decay)",
+    "e11": "sell 2025-03-04 -> expired idx40 close (default), idx45 close (decay); invisible correction e26 ignored",
+    "e12": "strong_buy 2025-03-06 -> delisted 2025-04-30 close, total loss",
+    "e13": "buy 2025-02-28 -> superseded at e14 entry 2025-03-13 open",
+    "e14": "hold 2025-03-13 -> superseded at e15 entry 2025-03-27 open",
+    "e15": "sell 2025-03-27 -> expired idx48 close (default), analyst_left idx50 close (decay, employment binds first)",
+    "e16": "strong_sell 2025-03-03 -> superseded at e17 restrict entry 2025-03-21 open",
+    "e17": "restricted non-investable 2025-03-21 -> superseded at e18 entry 2025-04-08 open",
+    "e18": "strong_sell 2025-04-08 -> analyst_left idx50 close (all policies)",
+    "e19": "buy 2025-03-05 -> expired idx44 close (default), idx49 close (decay)",
+    "e20": "hold 2025-03-07 -> expired idx33 close (default), idx38 close (decay)",
+    "e21": "buy 2025-03-04 -> superseded at e24 entry 2025-03-27 open (e22/e23 hidden by correction chain)",
+    "e24": "sell 2025-03-27 -> expired idx44 close (default), idx49 close (decay)",
+    "e27": "strong_buy 2025-03-10 -> superseded at e29 entry 2025-03-12 open",
+    "e29": "sell 2025-03-12 open -> exit same point: shorter_than_one_session, non-investable",
+    "e30": "buy 2025-03-12, null expiry -> run_end 2025-05-23 close",
+    "e28": "buy 2025-03-07 -> coverage_ended idx40 close (A3 S5 spell ends)"
+  }
+}

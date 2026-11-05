@@ -37,7 +37,9 @@ truth is `callscore_core` (`methodology`, `frames`, `metrics`, `contracts`).
   not close-to-close. The total-return value at a close is `tr_index`; at an
   open it is the previous close's `tr_index` times the split-adjusted
   overnight price ratio, with an ex-date dividend reinvested at that open.
-  `price` basis uses split-adjusted prices only.
+  `price` basis uses split-adjusted prices only. The exact formulas
+  (forward-cumulative `adj_factor`, open/close levels, halts, delisting) are
+  in `callscore_core.frames` next to `SECURITY_DAILY_FRAME`.
 - Benchmarks carry both `open_level` and `close_level`, so the benchmark
   leg spans exactly the same points as the stock. Missing benchmark data
   fails the run; it is never replaced by zero.

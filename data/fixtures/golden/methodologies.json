@@ -1,0 +1,142 @@
+{
+  "default": {
+    "contract_version": 1,
+    "entry_convention": "next_open",
+    "expiry_policy": "hard_close",
+    "decay_days": 90,
+    "benchmark_mode": "sector",
+    "benchmark_id": "IDX_BROAD",
+    "scoring_mode": "absolute",
+    "position_weights": {
+      "strong_buy": 1.0,
+      "buy": 0.5,
+      "hold": 0.0,
+      "sell": -0.5,
+      "strong_sell": -1.0
+    },
+    "fixed_horizons_days": [
+      63,
+      126,
+      252
+    ],
+    "primary_fixed_horizon_days": 126,
+    "min_consensus_ratings": 3,
+    "min_ratings_for_rank": 20,
+    "shrinkage_method": "empirical_bayes",
+    "peer_group_dims": [
+      "cap_bucket",
+      "region",
+      "sector"
+    ],
+    "min_peer_size": 5,
+    "peer_fallback": "unranked",
+    "transaction_cost_bps": 0.0,
+    "include_announcement_window": true,
+    "return_basis": "total",
+    "family_weights": {
+      "return_skill": 0.4,
+      "timing": 0.15,
+      "price_target": 0.15,
+      "behavior": 0.1,
+      "consistency": 0.2
+    },
+    "bootstrap_draws": 1000,
+    "bootstrap_seed": 20261006,
+    "confidence_level": 0.95,
+    "reporting_currency": "USD",
+    "missing_fx_policy": "fail"
+  },
+  "decay": {
+    "contract_version": 1,
+    "entry_convention": "next_open",
+    "expiry_policy": "decay",
+    "decay_days": 5,
+    "benchmark_mode": "sector",
+    "benchmark_id": "IDX_BROAD",
+    "scoring_mode": "absolute",
+    "position_weights": {
+      "strong_buy": 1.0,
+      "buy": 0.5,
+      "hold": 0.0,
+      "sell": -0.5,
+      "strong_sell": -1.0
+    },
+    "fixed_horizons_days": [
+      63,
+      126,
+      252
+    ],
+    "primary_fixed_horizon_days": 126,
+    "min_consensus_ratings": 3,
+    "min_ratings_for_rank": 20,
+    "shrinkage_method": "empirical_bayes",
+    "peer_group_dims": [
+      "cap_bucket",
+      "region",
+      "sector"
+    ],
+    "min_peer_size": 5,
+    "peer_fallback": "unranked",
+    "transaction_cost_bps": 0.0,
+    "include_announcement_window": true,
+    "return_basis": "total",
+    "family_weights": {
+      "return_skill": 0.4,
+      "timing": 0.15,
+      "price_target": 0.15,
+      "behavior": 0.1,
+      "consistency": 0.2
+    },
+    "bootstrap_draws": 1000,
+    "bootstrap_seed": 20261006,
+    "confidence_level": 0.95,
+    "reporting_currency": "USD",
+    "missing_fx_policy": "fail"
+  },
+  "fixed": {
+    "contract_version": 1,
+    "entry_convention": "next_open",
+    "expiry_policy": "hard_close",
+    "decay_days": 90,
+    "benchmark_mode": "sector",
+    "benchmark_id": "IDX_BROAD",
+    "scoring_mode": "absolute",
+    "position_weights": {
+      "strong_buy": 1.0,
+      "buy": 0.5,
+      "hold": 0.0,
+      "sell": -0.5,
+      "strong_sell": -1.0
+    },
+    "fixed_horizons_days": [
+      5,
+      10
+    ],
+    "primary_fixed_horizon_days": 10,
+    "min_consensus_ratings": 3,
+    "min_ratings_for_rank": 20,
+    "shrinkage_method": "empirical_bayes",
+    "peer_group_dims": [
+      "cap_bucket",
+      "region",
+      "sector"
+    ],
+    "min_peer_size": 5,
+    "peer_fallback": "unranked",
+    "transaction_cost_bps": 0.0,
+    "include_announcement_window": true,
+    "return_basis": "total",
+    "family_weights": {
+      "return_skill": 0.4,
+      "timing": 0.15,
+      "price_target": 0.15,
+      "behavior": 0.1,
+      "consistency": 0.2
+    },
+    "bootstrap_draws": 1000,
+    "bootstrap_seed": 20261006,
+    "confidence_level": 0.95,
+    "reporting_currency": "USD",
+    "missing_fx_policy": "fail"
+  }
+}

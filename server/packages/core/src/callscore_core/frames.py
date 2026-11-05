@@ -13,6 +13,14 @@ from callscore_core.methodology import FrozenModel, Identifier
 Dtype = Literal["String", "Date", "Datetime[us, UTC]", "Float64", "Int64", "Boolean"]
 
 HORIZON_TO_EXIT = "to_exit"
+MARKET_BENCHMARK_ID = "IDX_BROAD"
+
+
+def sector_benchmark_id(sector_id: str) -> str:
+    """Benchmark id of a sector's total-return index (``benchmark_mode = sector``)."""
+    if not sector_id or any(ch.isspace() for ch in sector_id):
+        raise ValueError("sector_id must be a non-empty identifier")
+    return f"SECTOR_{sector_id}"
 
 
 def horizon_label(days: int | None) -> str:
@@ -79,6 +87,9 @@ def _frame(
 
 
 _TS: Dtype = "Datetime[us, UTC]"
+
+# Spell frames (coverage, employment, classification): ``to_date`` is the last day the spell
+# applies (inclusive); null means open-ended. Session points are POINT_OPEN / POINT_CLOSE.
 
 # --- Engine inputs (point-in-time snapshot assembled by the application layer) -------------
 
@@ -153,6 +164,29 @@ SECURITY_CLASSIFICATION_FRAME = _frame(
     ),
     ("security_id", "from_date"),
 )
+
+POINT_OPEN = "open"
+POINT_CLOSE = "close"
+WEIGHT_SOURCES = ("rating", "consensus", "decay")
+
+# Pricing convention (decision 0003), shared by synth (which must generate data obeying it)
+# and the engine (which computes execution-point values from it):
+#
+# * ``adj_factor`` is forward-cumulative: 1.0 at listing, multiplied by the split ratio on
+#   each split's ex-date (2.0 for a 2:1 split). ``raw_price * adj_factor`` is split-continuous
+#   and never changes retroactively, so it is point-in-time safe.
+# * ``cash_dividend`` is per share on the ex-date and is reinvested at that session's open.
+# * ``tr_index`` is the close total-return level; 100.0 at the first listed session's close.
+#   For a later session t, with p = previous session:
+#       open_tr(t)  = tr_index(p) * adj(t) * (open(t) + div(t)) / (adj(p) * close(p))
+#       tr_index(t) = open_tr(t) * close(t) / open(t)
+#   On the first session, open_tr = 100 * open / close.
+# * ``price`` return basis uses ``raw_price * adj_factor`` at the execution point.
+# * Halted sessions carry open = close = previous close and ``is_halted`` = true.
+# * Delisting: ``delisting_date`` is the last traded session; the terminal value is that
+#   session's close level times (1 + ``final_return``) (-1.0 for bankruptcy).
+# * Benchmarks publish ``open_level`` and ``close_level`` directly; sector benchmarks are
+#   ``sector_benchmark_id(sector_id)``, the broad market is ``MARKET_BENCHMARK_ID``.
 
 SECURITY_DAILY_FRAME = _frame(
     "security_daily",
