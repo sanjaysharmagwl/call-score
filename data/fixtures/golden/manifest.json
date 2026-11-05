@@ -44,7 +44,8 @@
     "exit_reasons": {
       "superseded": "exit at the next interval's entry point (an open).",
       "dropped": "e05 drop exits e04's interval at the drop's would-be entry point (2025-04-01 open).",
-      "expired": "hard_close: close of last session on/before expiry_date; decay: close of session expiry_idx+5 with decay_start_session=expiry_idx+1.",
+      "expired": "hard_close: close of last session on/before expiry_date; decay: close of session expiry_idx+5 (decay exit candidate; an earlier binding exit such as analyst_left still wins).",
+      "decay_start_session": "under expiry_policy=decay it is the first session after the expiry session for EVERY interval whose expiry_date resolves — including non-investable and early-exited intervals (verified against callscore_engine.intervals).",
       "coverage_ended": "e28 exits at close of last session on/before A3's S5 coverage to_date (session index 40).",
       "analyst_left": "A2's employment spell ends session index 50; open A2 intervals exit at its close (e15 under decay, e18 under all policies).",
       "delisted": "e12 exits at S5's delisting session close; terminal value = close level x (1 + final_return) = 0.",
@@ -52,17 +53,19 @@
     },
     "e29_short_interval": "e29 announced post-close 2025-03-11 and e30 pre-market 2025-03-12 both get entry 2025-03-12 open, so the sell interval has entry == exit: kept, is_investable=false, non_investable_reason=shorter_than_one_session, exit_reason=superseded.",
     "non_investable": "e09 under_review (suspend) and e17 restricted are intervals with null weight; never treated as hold.",
-    "returns": "to_exit plus d63/d126/d252 (default, decay) or d5/d10 (fixed). Fixed d{n} ends at the close of the session n sessions after entry; beyond as_of => unavailable_reason=horizon_incomplete with null legs. Non-investable intervals => unavailable_reason=non_investable. Delisting terminates any horizon reaching it (terminated_by_delisting=true, final_return applied to the terminal close level).",
+    "returns": "to_exit plus d63/d126/d252 (default, decay) or d5/d10 (fixed). Fixed d{n} ends at the close of the session n sessions after entry; if that session is beyond the last session <= as_of the row is unavailable_reason=horizon_incomplete with null legs — this censoring is checked BEFORE delisting truncation, so e12's d63+ horizons are horizon_incomplete even though S5 delists earlier. When the horizon session exists, a leg ending at/after the delisting session is truncated to the delisting close with the terminal value (1+final_return) and terminated_by_delisting=true. Non-investable intervals => unavailable_reason=non_investable with ALL schedule/benchmark fields null (end_session, end_point, benchmark_id); horizon_incomplete rows keep benchmark_id but have null end_*. Delisted to_exit: stock_return=-1.0, exit_price=0.0 (terminal px level).",
     "benchmark": "sector mode: SECTOR_<sector> of the security's classification spell at entry_session (S1/S2 TECH, S3/S4 HLTH, S5 FIN).",
-    "contributions": "absolute weights strong_buy=1.0, buy=0.5, hold=0.0, sell=-0.5, strong_sell=-1.0. to_exit = weight x to_exit excess for single-segment policies; under decay it is the sum over exposure segments (full weight to expiry close, then w x (1-k/5) per decay session). Fixed horizons use the entry (first-segment) weight.",
+    "contributions": "absolute weights strong_buy=1.0, buy=0.5, hold=0.0, sell=-0.5, strong_sell=-1.0. to_exit = weight x to_exit excess for single-segment policies; under decay it is the sum over exposure segments built exactly like callscore_engine.exposures._segment_rows (segment 1 entry -> close before decay_start at full weight clamped at exit, then one prev-close -> close segment per decay session k=1..decay_days at w x (1-k/decay_days), clamped at exit) whenever decay_start_session is set and the interval is investable — this includes analyst_left/coverage_ended/delisted exits whose decay tail is clipped by the exit (e15 gets a real 3-segment taper). Fixed horizons use the entry (first-segment) weight.",
     "ambiguities_resolved": [
-      "Delisted exit_price is reported as the terminal price level close_px x (1+final_return) (0.0 for the bankruptcy), so price-basis and TR-basis legs stay consistent; stock_return = -1.0 exactly.",
-      "Unavailable return rows keep start/end session+point populated where the schedule is known (non_investable rows carry the interval's exit point; horizon_incomplete rows have null end_*); entry/exit prices and returns are null.",
-      "benchmark_id is populated on every return row, including unavailable ones, because benchmark assignment is interval-level, not leg-level.",
-      "decay_start_session is set only for intervals whose binding exit is expired under the decay policy.",
-      "flags carries the structural non-investable reason (shorter_than_one_session) when present; canonical-rating reasons (under_review, restricted) are reported via non_investable_reason only."
+      "Expected outputs were verified row-for-row against callscore_engine.intervals/exposures/returns/contributions (smoke diff = 0 on all three variants); where the contracts were ambiguous the engine's implemented choice is what is recorded here.",
+      "Delisted exit_price is the terminal price level close_px x (1+final_return) (0.0 for the bankruptcy), so price-basis and TR-basis legs stay consistent; stock_return = -1.0 exactly.",
+      "Unavailable return rows: non_investable rows have null end_session/end_point/benchmark_id; horizon_incomplete rows have null end_session/end_point but keep benchmark_id (it is an interval-level assignment).",
+      "intervals.flags uses the engine vocabulary: 'non_positive_length' for entry >= exit (e29) and 'non_investable_rating' for canonical not_rated/under_review/restricted (e09, e17); comma-joined when both apply.",
+      "non_investable_reason precedence: before_listing > structural (after_coverage_end/after_delisting/after_run_end mapped from the binding exit reason, default shorter_than_one_session) > canonical rating.",
+      "decay_start_session is set under expiry_policy=decay for every interval with a resolvable expiry_date, investable or not; exposure decay segments are only built for investable intervals."
     ]
   },
+  "generation": "reference.py is a stdlib-only (datetime/zoneinfo, csv, json, Decimal) independent re-implementation of decision 0003; it never imports callscore_engine or callscore_core. Regenerate: python3 server/packages/engine/tests/golden/reference.py",
   "interval_notes": {
     "e01": "buy 2025-02-26 open -> superseded at e02 entry 2025-03-03 open",
     "e02": "strong_buy 2025-03-03 -> superseded at e04 entry 2025-03-19 open (e03 reiteration extended expiry to idx25, never binding)",

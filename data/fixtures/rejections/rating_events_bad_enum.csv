@@ -1,0 +1,2 @@
+event_id,analyst_id,firm_id,security_id,announced_ts,effective_ts,knowledge_ts,action_type,native_rating,canonical_rating,prior_canonical_rating,scale_id,price_target,pt_currency,pt_horizon_months,expiry_date,supersedes_event_id,is_correction
+EV_BAD1,A1,F1,S1,2024-01-02T15:00:00+00:00,2024-01-02T15:00:00+00:00,2024-01-02T15:00:00+00:00,moonshot,Buy,galaxy,F1:five,,,,,,false

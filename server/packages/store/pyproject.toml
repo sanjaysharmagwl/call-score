@@ -12,6 +12,7 @@ classifiers = [
 ]
 dependencies = [
     "callscore-core>=0.1.0",
+    "polars>=1.44,<2",
     "sqlalchemy>=2.0",
 ]
 

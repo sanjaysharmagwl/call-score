@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-10-28T02:06:28.705258Z"
+exclude-newer = "2026-10-29T07:11:47.756595Z"
 exclude-newer-span = "P7D"
 
 [manifest]
@@ -165,6 +165,7 @@ dependencies = [
     { name = "callscore-engine" },
     { name = "callscore-store" },
     { name = "fastapi" },
+    { name = "polars" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
@@ -174,6 +175,7 @@ requires-dist = [
     { name = "callscore-engine", editable = "packages/engine" },
     { name = "callscore-store", editable = "packages/store" },
     { name = "fastapi", specifier = ">=0.115" },
+    { name = "polars", specifier = ">=1.44,<2" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
 
@@ -269,12 +271,14 @@ version = "0.1.0"
 source = { editable = "packages/store" }
 dependencies = [
     { name = "callscore-core" },
+    { name = "polars" },
     { name = "sqlalchemy" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "callscore-core", editable = "packages/core" },
+    { name = "polars", specifier = ">=1.44,<2" },
     { name = "sqlalchemy", specifier = ">=2.0" },
 ]
 

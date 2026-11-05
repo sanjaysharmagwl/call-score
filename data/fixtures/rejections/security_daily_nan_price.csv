@@ -1,0 +1,2 @@
+security_id,session_date,open,close,high,low,adj_factor,cash_dividend,tr_index,is_halted
+S1,2024-01-02,10.0,NaN,10.5,9.5,1.0,,100.0,false

@@ -1,0 +1,3 @@
+event_id,analyst_id,firm_id,security_id,announced_ts,effective_ts,knowledge_ts,action_type,native_rating,canonical_rating,prior_canonical_rating,scale_id,price_target,pt_currency,pt_horizon_months,expiry_date,supersedes_event_id,is_correction
+EV_DUP,A1,F1,S1,2024-01-02T15:00:00+00:00,2024-01-02T15:00:00+00:00,2024-01-02T15:00:00+00:00,initiation,Buy,buy,,F1:five,,,,2024-03-01,,false
+EV_DUP,A1,F1,S1,2024-01-03T15:00:00+00:00,2024-01-03T15:00:00+00:00,2024-01-03T15:00:00+00:00,reiteration,Buy,buy,buy,F1:five,,,,2024-03-01,,false

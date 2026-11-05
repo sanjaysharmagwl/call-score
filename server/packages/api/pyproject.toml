@@ -16,7 +16,11 @@ dependencies = [
     "callscore-engine>=0.1.0",
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
+    "polars>=1.44,<2",
 ]
+
+[project.scripts]
+callscore = "callscore_api.cli:main"
 
 [tool.uv.sources]
 callscore-core = { workspace = true }
