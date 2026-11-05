@@ -15,6 +15,7 @@ const NAV: { num: string; label: string; to?: string }[] = [
 const LAB_NAV: { label: string; to: string }[] = [
   { label: "Methodology", to: "/methodologies" },
   { label: "Scenarios", to: "/scenarios" },
+  { label: "Backtests", to: "/backtests" },
 ];
 
 function HealthDot() {

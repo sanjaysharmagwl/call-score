@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BacktestsRouteImport } from './routes/backtests'
 import { Route as ChangesRouteImport } from './routes/changes'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as MethodologiesRouteImport } from './routes/methodologies'
@@ -18,6 +19,7 @@ import { Route as SectorsRouteImport } from './routes/sectors'
 import { Route as SecuritiesRouteImport } from './routes/securities'
 import { Route as AnalystsIndexRouteImport } from './routes/analysts.index'
 import { Route as AnalystsAnalystIdRouteImport } from './routes/analysts.$analystId'
+import { Route as BacktestsBacktestIdRouteImport } from './routes/backtests/$backtestId'
 import { Route as ScenariosScenarioIdRouteImport } from './routes/scenarios/$scenarioId'
 import { Route as SectorsSectorIdRouteImport } from './routes/sectors_.$sectorId'
 import { Route as SecuritiesSecurityIdRouteImport } from './routes/securities_.$securityId'
@@ -26,6 +28,11 @@ import { Route as AnalystsAnalystIdRatingsIntervalIdRouteImport } from './routes
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BacktestsRoute = BacktestsRouteImport.update({
+  id: '/backtests',
+  path: '/backtests',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangesRoute = ChangesRouteImport.update({
@@ -68,6 +75,11 @@ const AnalystsAnalystIdRoute = AnalystsAnalystIdRouteImport.update({
   path: '/analysts/$analystId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BacktestsBacktestIdRoute = BacktestsBacktestIdRouteImport.update({
+  id: '/$backtestId',
+  path: '/$backtestId',
+  getParentRoute: () => BacktestsRoute,
+} as any)
 const ScenariosScenarioIdRoute = ScenariosScenarioIdRouteImport.update({
   id: '/$scenarioId',
   path: '/$scenarioId',
@@ -92,6 +104,7 @@ const AnalystsAnalystIdRatingsIntervalIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/backtests': typeof BacktestsRouteWithChildren
   '/changes': typeof ChangesRoute
   '/leaderboard': typeof LeaderboardRoute
   '/methodologies': typeof MethodologiesRoute
@@ -99,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/sectors': typeof SectorsRoute
   '/securities': typeof SecuritiesRoute
   '/analysts/$analystId': typeof AnalystsAnalystIdRoute
+  '/backtests/$backtestId': typeof BacktestsBacktestIdRoute
   '/scenarios/$scenarioId': typeof ScenariosScenarioIdRoute
   '/sectors/$sectorId': typeof SectorsSectorIdRoute
   '/securities/$securityId': typeof SecuritiesSecurityIdRoute
@@ -107,6 +121,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/backtests': typeof BacktestsRouteWithChildren
   '/changes': typeof ChangesRoute
   '/leaderboard': typeof LeaderboardRoute
   '/methodologies': typeof MethodologiesRoute
@@ -114,6 +129,7 @@ export interface FileRoutesByTo {
   '/sectors': typeof SectorsRoute
   '/securities': typeof SecuritiesRoute
   '/analysts/$analystId': typeof AnalystsAnalystIdRoute
+  '/backtests/$backtestId': typeof BacktestsBacktestIdRoute
   '/scenarios/$scenarioId': typeof ScenariosScenarioIdRoute
   '/sectors/$sectorId': typeof SectorsSectorIdRoute
   '/securities/$securityId': typeof SecuritiesSecurityIdRoute
@@ -123,6 +139,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/backtests': typeof BacktestsRouteWithChildren
   '/changes': typeof ChangesRoute
   '/leaderboard': typeof LeaderboardRoute
   '/methodologies': typeof MethodologiesRoute
@@ -130,6 +147,7 @@ export interface FileRoutesById {
   '/sectors': typeof SectorsRoute
   '/securities': typeof SecuritiesRoute
   '/analysts/$analystId': typeof AnalystsAnalystIdRoute
+  '/backtests/$backtestId': typeof BacktestsBacktestIdRoute
   '/scenarios/$scenarioId': typeof ScenariosScenarioIdRoute
   '/sectors_/$sectorId': typeof SectorsSectorIdRoute
   '/securities_/$securityId': typeof SecuritiesSecurityIdRoute
@@ -140,6 +158,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/backtests'
     | '/changes'
     | '/leaderboard'
     | '/methodologies'
@@ -147,6 +166,7 @@ export interface FileRouteTypes {
     | '/sectors'
     | '/securities'
     | '/analysts/$analystId'
+    | '/backtests/$backtestId'
     | '/scenarios/$scenarioId'
     | '/sectors/$sectorId'
     | '/securities/$securityId'
@@ -155,6 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/backtests'
     | '/changes'
     | '/leaderboard'
     | '/methodologies'
@@ -162,6 +183,7 @@ export interface FileRouteTypes {
     | '/sectors'
     | '/securities'
     | '/analysts/$analystId'
+    | '/backtests/$backtestId'
     | '/scenarios/$scenarioId'
     | '/sectors/$sectorId'
     | '/securities/$securityId'
@@ -170,6 +192,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/backtests'
     | '/changes'
     | '/leaderboard'
     | '/methodologies'
@@ -177,6 +200,7 @@ export interface FileRouteTypes {
     | '/sectors'
     | '/securities'
     | '/analysts/$analystId'
+    | '/backtests/$backtestId'
     | '/scenarios/$scenarioId'
     | '/sectors_/$sectorId'
     | '/securities_/$securityId'
@@ -186,6 +210,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BacktestsRoute: typeof BacktestsRouteWithChildren
   ChangesRoute: typeof ChangesRoute
   LeaderboardRoute: typeof LeaderboardRoute
   MethodologiesRoute: typeof MethodologiesRoute
@@ -206,6 +231,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/backtests': {
+      id: '/backtests'
+      path: '/backtests'
+      fullPath: '/backtests'
+      preLoaderRoute: typeof BacktestsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/changes': {
@@ -264,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalystsAnalystIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/backtests/$backtestId': {
+      id: '/backtests/$backtestId'
+      path: '/$backtestId'
+      fullPath: '/backtests/$backtestId'
+      preLoaderRoute: typeof BacktestsBacktestIdRouteImport
+      parentRoute: typeof BacktestsRoute
+    }
     '/scenarios/$scenarioId': {
       id: '/scenarios/$scenarioId'
       path: '/$scenarioId'
@@ -295,6 +334,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface BacktestsRouteChildren {
+  BacktestsBacktestIdRoute: typeof BacktestsBacktestIdRoute
+}
+
+const BacktestsRouteChildren: BacktestsRouteChildren = {
+  BacktestsBacktestIdRoute: BacktestsBacktestIdRoute,
+}
+
+const BacktestsRouteWithChildren = BacktestsRoute._addFileChildren(
+  BacktestsRouteChildren,
+)
+
 interface ScenariosRouteChildren {
   ScenariosScenarioIdRoute: typeof ScenariosScenarioIdRoute
 }
@@ -309,6 +360,7 @@ const ScenariosRouteWithChildren = ScenariosRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BacktestsRoute: BacktestsRouteWithChildren,
   ChangesRoute: ChangesRoute,
   LeaderboardRoute: LeaderboardRoute,
   MethodologiesRoute: MethodologiesRoute,
