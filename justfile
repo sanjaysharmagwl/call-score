@@ -71,9 +71,17 @@ api-types:
     cd web && pnpm api-types
     rm web/openapi.json
 
-# Generate a synthetic dataset (just seed small|medium|full)
-seed scale="small":
-    cd server && uv run callscore-synth --scale {{scale}} --out ../data/db/callscore.db
+# Generate a synthetic dataset (just seed small|medium|full [force])
+# Pass 'force' (or any non-empty value) as the second argument to overwrite
+# an existing non-empty data/db/callscore.db.
+seed scale="small" force="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    args=(--scale {{scale}} --out ../data/db/callscore.db)
+    if [[ -n "{{force}}" ]]; then
+        args+=(--force)
+    fi
+    cd server && uv run callscore-synth "${args[@]}"
 
 # Execute a scoring run against a DB:
 #   just run ../data/db/callscore.db 2025-12-31 [methodology] [scale]
@@ -119,11 +127,11 @@ benchmark profile="full" seed="20261006" as_of="2025-12-31":
 
 # Preview the docs site (reloads on edit)
 docs-serve:
-    cd server && uv run --group docs mkdocs serve -f ../docs/mkdocs.yml
+    cd server && uv run --group docs zensical serve -f ../docs/mkdocs.yml
 
 # Build the docs site (strict: warnings are errors)
 docs-build:
-    cd server && uv run --group docs mkdocs build --strict -f ../docs/mkdocs.yml
+    cd server && uv run --group docs zensical build --strict -f ../docs/mkdocs.yml
 
 # Build the SPA and all server wheels/sdists into dist/
 build:
@@ -132,5 +140,5 @@ build:
 
 # Remove build artifacts and caches
 clean:
-    rm -rf dist site web/dist server/.pytest_cache server/.mypy_cache server/.ruff_cache
+    rm -rf dist site docs/site web/dist server/.pytest_cache server/.mypy_cache server/.ruff_cache
     find . -name __pycache__ -type d -prune -exec rm -rf {} +

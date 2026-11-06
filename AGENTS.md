@@ -17,7 +17,7 @@ platform. Four top-level folders:
   Router/Query, openapi-fetch client, Tailwind v4, Biome for lint/format.
 - `data/` — `profiles/` + `fixtures/` committed; `raw/` `db/` `exports/`
   gitignored (`.gitkeep` retained).
-- `docs/` — MkDocs Material site (`docs/mkdocs.yml`, `docs_dir: content`);
+- `docs/` — Zensical site (`docs/mkdocs.yml`, `docs_dir: content`);
   deps live in the server `docs` dependency group.
 
 ## Commands
@@ -29,9 +29,10 @@ Everything runs through `just` from the repo root (`just` lists recipes):
 - `just dev` — API (uvicorn `--reload`, :8000) + Vite dev server; Ctrl-C
   stops both. Slices: `just dev-api`, `just dev-web`.
 - `just check` — `server-check` (ruff + format check + mypy strict + pytest)
-  and `web-check` (biome + tsc + vitest) and `docs-build` (mkdocs --strict).
+  and `web-check` (biome + tsc + vitest) and `docs-build` (zensical --strict).
 - `just server-test core` — one package's tests.
-- `just seed small|medium|full` — write `data/db/callscore.db`.
+- `just seed small|medium|full [force]` — write `data/db/callscore.db` (pass
+  `force` as second arg to overwrite an existing non-empty DB).
 - `just api-types` — regenerate `web/src/api/schema.gen.ts` from the API's
   OpenAPI schema.
 - `just build` — web bundle + all server wheels into `dist/`.

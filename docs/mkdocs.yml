@@ -1,8 +1,8 @@
 site_name: callscore
 docs_dir: content
-site_dir: ../site
+site_dir: site
 theme:
-  name: material
+  variant: modern
 plugins:
   - search
   - mkdocstrings:

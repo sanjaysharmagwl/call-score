@@ -44,7 +44,7 @@ export function useRunSelection() {
 export function useActiveRun() {
   const { runId, setRunId } = useRunSelection();
   const latestRuns = useRuns({ status: "succeeded", limit: 1, order: "desc" }, !runId);
-  const latest = latestRuns.data?.data[0];
+  const latest = latestRuns.data?.data?.[0];
 
   useEffect(() => {
     if (!runId && latest) {

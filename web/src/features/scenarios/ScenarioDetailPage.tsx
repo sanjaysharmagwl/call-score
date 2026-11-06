@@ -374,7 +374,7 @@ export function ScenarioDetailPage({
 }) {
   const scenario = useScenario(scenarioId);
   const latestRuns = useRuns({ status: "succeeded", limit: 1, order: "desc" });
-  const defaultAsOf = latestRuns.data?.data[0]?.as_of_date ?? "";
+  const defaultAsOf = latestRuns.data?.data?.[0]?.as_of_date ?? "";
   const data = scenario.data;
 
   const baseParams = useMemo(

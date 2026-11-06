@@ -62,7 +62,7 @@ export function SecuritiesPage() {
   };
   const listQuery = useSecurities(params);
   const rows = listQuery.data?.data ?? [];
-  const total = listQuery.data?.pagination.total ?? 0;
+  const total = listQuery.data?.pagination?.total ?? 0;
 
   const csvHref = buildCsvUrl("/api/securities", {
     q: params.q,

@@ -15,8 +15,8 @@ just check      # lint, typecheck, tests and docs build for all components
    pre-commit hooks).
 2. `just seed small` — generate a synthetic dataset with `callscore-synth`
    (`small`, `medium` or `full`; `just seed medium` etc.). The DB lands at
-   `data/db/callscore.db`; re-running requires deleting the file or adding
-   `--force` via `callscore-synth` directly.
+   `data/db/callscore.db`; re-running requires adding `force` as a second
+   argument (`just seed small force`) or deleting the file.
 3. `just dev` — starts the FastAPI backend on :8000 and the Vite dev server
    on :5173. The SPA talks only to `/api`; there is no calc logic in the web
    bundle.

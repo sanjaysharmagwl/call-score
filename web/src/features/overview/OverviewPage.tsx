@@ -53,9 +53,9 @@ export function OverviewPage() {
   // Overview without a run_id resolves the latest succeeded run server-side;
   // used only to pre-fill the new-run form's as_of default.
   const overviewProbe = useOverview(runId);
-  const defaultAsOf = overviewProbe.data?.data_coverage.last_session ?? todayIso();
+  const defaultAsOf = overviewProbe.data?.data_coverage?.last_session ?? todayIso();
 
-  const hasRuns = (runsProbe.data?.data.length ?? 0) > 0;
+  const hasRuns = (runsProbe.data?.data?.length ?? 0) > 0;
   const runStatus = runDetail.data?.status;
   const dbEmpty = isEmptyDb(runDetail.data?.row_counts);
 

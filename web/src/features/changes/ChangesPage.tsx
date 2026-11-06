@@ -64,7 +64,7 @@ export function ChangesPage() {
   };
   const changesQuery = useChanges(params);
   const rows = changesQuery.data?.data ?? [];
-  const total = changesQuery.data?.pagination.total ?? 0;
+  const total = changesQuery.data?.pagination?.total ?? 0;
 
   const csvHref = buildCsvUrl("/api/changes", {
     run_id: params.run_id,

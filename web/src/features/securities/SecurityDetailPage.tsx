@@ -76,7 +76,7 @@ export function SecurityDetailPage({ securityId }: { securityId: string }) {
   const sectorsQuery = useSectors({ limit: 500 });
   const sectorName = useMemo(() => {
     if (!sectorId) return detail?.sector_name ?? null;
-    const found = sectorsQuery.data?.data.find((s) => s.sector_id === sectorId);
+    const found = sectorsQuery.data?.data?.find((s) => s.sector_id === sectorId);
     return found?.name ?? detail?.sector_name ?? sectorId;
   }, [sectorId, sectorsQuery.data, detail?.sector_name]);
 

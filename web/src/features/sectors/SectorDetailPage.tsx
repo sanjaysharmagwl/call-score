@@ -28,7 +28,7 @@ export function SectorDetailPage({ sectorId }: { sectorId: string }) {
   const perfQuery = useSectorPerformance(sectorId, runId);
 
   const sector = useMemo(
-    () => sectorsQuery.data?.data.find((s) => s.sector_id === sectorId) ?? null,
+    () => sectorsQuery.data?.data?.find((s) => s.sector_id === sectorId) ?? null,
     [sectorsQuery.data, sectorId],
   );
   const perf = perfQuery.data;

@@ -21,7 +21,7 @@ analyst's track record against it.
 
 ```bash
 just setup        # install everything + git hooks
-just seed small   # write a small synthetic DB to data/db/callscore.db
+just seed small   # write a small synthetic DB to data/db/callscore.db (add `force` to overwrite)
 just dev          # API (:8000) and Vite dev server together -> http://localhost:5173
 just check        # lint + typecheck + tests + docs build, all components
 ```

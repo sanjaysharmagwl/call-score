@@ -335,7 +335,7 @@ export function BenchmarkPanel() {
     },
   ];
 
-  const previewRow = benchmarks.data?.data.find((b) => b.benchmark_id === previewId);
+  const previewRow = benchmarks.data?.data?.find((b) => b.benchmark_id === previewId);
 
   return (
     <div className="flex flex-col gap-4">

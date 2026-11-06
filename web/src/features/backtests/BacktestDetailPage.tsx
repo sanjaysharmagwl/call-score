@@ -328,7 +328,7 @@ function TradesSection({ backtestId }: { backtestId: string }) {
   const [pageIndex, setPageIndex] = useState(0);
   const trades = useBacktestTrades(backtestId, { limit: PAGE_SIZE, offset: pageIndex * PAGE_SIZE });
   const rows = trades.data?.data ?? [];
-  const total = trades.data?.pagination.total ?? rows.length;
+  const total = trades.data?.pagination?.total ?? rows.length;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
